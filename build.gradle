@@ -1,22 +1,24 @@
 apply from: './dependencies.gradle'
+apply plugin: "com.github.ben-manes.versions"
 
 buildscript {
   apply from: './dependencies.gradle'
 
   repositories {
-    jcenter()
     google()
+    jcenter()
   }
   dependencies {
     classpath 'com.android.tools.build:gradle:' + versions.gradlePlugin
     classpath 'com.diffplug.spotless:spotless-plugin-gradle:' + versions.spotlessPlugin
     classpath 'org.jetbrains.kotlin:kotlin-gradle-plugin:' + versions.kotlin
+    classpath 'com.github.ben-manes:gradle-versions-plugin:' + versions.versionPlugin
   }
 }
 
 allprojects {
   repositories {
-    jcenter()
     google()
+    jcenter()
   }
 }
