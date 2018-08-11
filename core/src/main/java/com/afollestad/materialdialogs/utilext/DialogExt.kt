@@ -27,6 +27,7 @@ import android.widget.ImageView
 import android.widget.TextView
 import com.afollestad.materialdialogs.MaterialDialog
 import com.afollestad.materialdialogs.R
+import com.afollestad.materialdialogs.autoDismiss
 
 @Suppress("UNCHECKED_CAST")
 internal fun <T> inflate(
@@ -154,9 +155,9 @@ internal fun getDrawable(
   return ContextCompat.getDrawable(context, res)
 }
 
-internal fun MaterialDialog.getStringArray(@ArrayRes res: Int?): Array<CharSequence> {
+internal fun MaterialDialog.getStringArray(@ArrayRes res: Int?): Array<String> {
   if (res == null) return emptyArray()
-  return context.resources.getTextArray(res)
+  return context.resources.getStringArray(res)
 }
 
 internal fun MaterialDialog.hasActionButtons(): Boolean {
@@ -197,7 +198,7 @@ internal fun MaterialDialog.setText(
   }
   if (value != null && (allowDismiss || click != null)) {
     textView.setOnClickListener {
-      if (autoDismiss) {
+      if (autoDismiss()) {
         dismiss()
       }
       if (click != null) {

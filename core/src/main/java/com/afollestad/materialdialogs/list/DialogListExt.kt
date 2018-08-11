@@ -21,9 +21,9 @@ import com.afollestad.materialdialogs.utilext.getDrawable
 import com.afollestad.materialdialogs.utilext.getStringArray
 import com.afollestad.materialdialogs.utilext.inflate
 
-typealias ItemClickListener = ((dialog: MaterialDialog, index: Int, text: CharSequence) -> (Unit))?
-typealias SingleChoiceListener = ((MaterialDialog, Int, CharSequence) -> (Boolean))?
-typealias MultiChoiceListener = ((MaterialDialog, Array<Int>, Array<CharSequence>) -> (Boolean))?
+typealias ItemClickListener = ((dialog: MaterialDialog, index: Int, text: String) -> (Unit))?
+typealias SingleChoiceListener = ((MaterialDialog, Int, String) -> (Boolean))?
+typealias MultiChoiceListener = ((MaterialDialog, Array<Int>, Array<String>) -> (Boolean))?
 
 private fun MaterialDialog.addContentRecyclerView() {
   if (this.contentScrollView != null || this.textInputLayout != null) {
@@ -46,7 +46,7 @@ private fun MaterialDialog.addContentRecyclerView() {
 
 internal fun MaterialDialog.getItemSelector() =
   getDrawable(
-      context = baseContext, attr = attr.md_item_selector
+      context = context, attr = attr.md_item_selector
   )
 
 @CheckResult
@@ -78,23 +78,43 @@ fun MaterialDialog.customListAdapter(
 @CheckResult
 fun MaterialDialog.listItems(
   @ArrayRes arrayRes: Int? = null,
-  array: Array<CharSequence>? = null,
+  array: Array<String>? = null,
   click: ItemClickListener = null
 ): MaterialDialog {
   assertOneSet(arrayRes, array)
   val items = array ?: getStringArray(arrayRes)
+  if (this.contentRecyclerView != null &&
+      this.contentRecyclerView!!.adapter != null &&
+      this.contentRecyclerView!!.adapter is MDListAdapter
+  ) {
+    val adapter = this.contentRecyclerView!!.adapter as MDListAdapter
+    adapter.items = items
+    adapter.click = click
+    adapter.notifyDataSetChanged()
+    return this
+  }
   return customListAdapter(MDListAdapter(this, items, click))
 }
 
 @CheckResult
 fun MaterialDialog.listItemsSingleChoice(
   @ArrayRes arrayRes: Int? = null,
-  array: Array<CharSequence>? = null,
+  array: Array<String>? = null,
   initialSelection: Int = -1,
   selectionChanged: SingleChoiceListener = null
 ): MaterialDialog {
   assertOneSet(arrayRes, array)
   val items = array ?: getStringArray(arrayRes)
+  if (this.contentRecyclerView != null &&
+      this.contentRecyclerView!!.adapter != null &&
+      this.contentRecyclerView!!.adapter is MDSingleChoiceAdapter
+  ) {
+    val adapter = this.contentRecyclerView!!.adapter as MDSingleChoiceAdapter
+    adapter.items = items
+    adapter.selectionChanged = selectionChanged
+    adapter.notifyDataSetChanged()
+    return this
+  }
   return customListAdapter(
       MDSingleChoiceAdapter(
           this, items, initialSelection, selectionChanged
@@ -105,12 +125,21 @@ fun MaterialDialog.listItemsSingleChoice(
 @CheckResult
 fun MaterialDialog.listItemsMultiChoice(
   @ArrayRes arrayRes: Int? = null,
-  array: Array<CharSequence>? = null,
+  array: Array<String>? = null,
   initialSelection: Array<Int> = emptyArray(),
   selectionChanged: MultiChoiceListener = null
 ): MaterialDialog {
   assertOneSet(arrayRes, array)
   val items = array ?: getStringArray(arrayRes)
+  if (this.contentRecyclerView!!.adapter != null &&
+      this.contentRecyclerView!!.adapter is MDMultiChoiceAdapter
+  ) {
+    val adapter = this.contentRecyclerView!!.adapter as MDMultiChoiceAdapter
+    adapter.items = items
+    adapter.selectionChanged = selectionChanged
+    adapter.notifyDataSetChanged()
+    return this
+  }
   return customListAdapter(
       MDMultiChoiceAdapter(
           this, items, initialSelection, selectionChanged

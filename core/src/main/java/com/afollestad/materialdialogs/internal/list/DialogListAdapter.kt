@@ -12,6 +12,7 @@ import android.view.ViewGroup
 import android.widget.TextView
 import com.afollestad.materialdialogs.MaterialDialog
 import com.afollestad.materialdialogs.R
+import com.afollestad.materialdialogs.autoDismiss
 import com.afollestad.materialdialogs.list.ItemClickListener
 import com.afollestad.materialdialogs.list.getItemSelector
 import com.afollestad.materialdialogs.utilext.get
@@ -27,7 +28,7 @@ internal class MDListViewHolder(
   init {
     itemView.setOnClickListener {
       adapter.click?.invoke(dialog, adapterPosition, adapter.items[adapterPosition])
-      if (dialog.autoDismiss && !dialog.hasActionButtons()) {
+      if (dialog.autoDismiss() && !dialog.hasActionButtons()) {
         dialog.dismiss()
       }
     }
@@ -43,7 +44,7 @@ internal class MDListViewHolder(
  */
 internal class MDListAdapter(
   private var dialog: MaterialDialog,
-  internal var items: Array<CharSequence>,
+  internal var items: Array<String>,
   internal var click: ItemClickListener
 ) : RecyclerView.Adapter<MDListViewHolder>() {
 
@@ -51,7 +52,7 @@ internal class MDListAdapter(
     parent: ViewGroup,
     viewType: Int
   ): MDListViewHolder {
-    val listItemView: View = parent.inflate(dialog.context, R.layout.md_listitem)
+    val listItemView: View = parent.inflate(dialog.appContext, R.layout.md_listitem)
     return MDListViewHolder(listItemView, this, dialog)
   }
 

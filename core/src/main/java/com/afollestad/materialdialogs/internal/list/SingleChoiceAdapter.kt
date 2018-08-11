@@ -13,6 +13,7 @@ import android.view.ViewGroup
 import android.widget.TextView
 import com.afollestad.materialdialogs.MaterialDialog
 import com.afollestad.materialdialogs.R
+import com.afollestad.materialdialogs.autoDismiss
 import com.afollestad.materialdialogs.list.SingleChoiceListener
 import com.afollestad.materialdialogs.list.getItemSelector
 import com.afollestad.materialdialogs.utilext.hasActionButtons
@@ -32,7 +33,7 @@ internal class MDSingleChoiceViewHolder(
       if (canSelect) {
         adapter.currentSelection = adapterPosition
       }
-      if (canSelect && dialog.autoDismiss && !dialog.hasActionButtons()) {
+      if (canSelect && dialog.autoDismiss() && !dialog.hasActionButtons()) {
         dialog.dismiss()
       }
     }
@@ -49,7 +50,7 @@ internal class MDSingleChoiceViewHolder(
  */
 internal class MDSingleChoiceAdapter(
   private var dialog: MaterialDialog,
-  internal var items: Array<CharSequence>,
+  internal var items: Array<String>,
   initialSelection: Int,
   internal var selectionChanged: SingleChoiceListener
 ) : RecyclerView.Adapter<MDSingleChoiceViewHolder>() {
@@ -66,7 +67,7 @@ internal class MDSingleChoiceAdapter(
     parent: ViewGroup,
     viewType: Int
   ): MDSingleChoiceViewHolder {
-    val listItemView: View = parent.inflate(dialog.context, R.layout.md_listitem_singlechoice)
+    val listItemView: View = parent.inflate(dialog.appContext, R.layout.md_listitem_singlechoice)
     return MDSingleChoiceViewHolder(
         listItemView, this, dialog
     )

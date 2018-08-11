@@ -44,4 +44,7 @@
   <!-- WebView example -->
   <string name="changelog">Changelog</string>
 
+  <!-- File and Folder Chooser Examples -->
+  <string name="select">Select</string>
+
 </resources>

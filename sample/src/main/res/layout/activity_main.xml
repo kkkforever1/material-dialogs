@@ -459,10 +459,10 @@
         android:text="Color Chooser, Custom + No Sub"
         />
 
-    <!-- File/Folder Choosers -->
+    <!-- File Choosers -->
 
     <TextView
-        android:text="File/Folder Choosers"
+        android:text="File Choosers"
         style="@style/SampleHeader"
         />
 
@@ -475,11 +475,50 @@
         />
 
     <Button
+        android:id="@+id/file_chooser_buttons"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/sample_button_height"
+        android:layout_marginTop="@dimen/sample_button_spacing"
+        android:text="File Chooser + Buttons"
+        />
+
+    <Button
+        android:id="@+id/file_chooser_filter"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/sample_button_height"
+        android:layout_marginTop="@dimen/sample_button_spacing"
+        android:text="File Chooser + Filter"
+        />
+
+    <!-- Folder Choosers -->
+
+    <TextView
+        android:text="Folder Choosers"
+        style="@style/SampleHeader"
+        />
+
+    <Button
         android:id="@+id/folder_chooser"
         android:layout_width="match_parent"
         android:layout_height="@dimen/sample_button_height"
         android:layout_marginTop="@dimen/sample_button_spacing"
         android:text="Folder Chooser"
+        />
+
+    <Button
+        android:id="@+id/folder_chooser_buttons"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/sample_button_height"
+        android:layout_marginTop="@dimen/sample_button_spacing"
+        android:text="Folder Chooser + Buttons"
+        />
+
+    <Button
+        android:id="@+id/folder_chooser_filter"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/sample_button_height"
+        android:layout_marginTop="@dimen/sample_button_spacing"
+        android:text="Folder Chooser + Filter"
         />
 
   </LinearLayout>

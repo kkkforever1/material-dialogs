@@ -34,20 +34,17 @@ import com.afollestad.materialdialogs.utilext.setWindowConstraints
 
 typealias DialogCallback = (MaterialDialog) -> Unit
 
+internal const val CONFIG_AUTO_DISMISS = "auto_dismiss"
+internal fun MaterialDialog.autoDismiss() = config[CONFIG_AUTO_DISMISS] as Boolean
+
 /** @author Aidan Follestad (afollestad) */
 class MaterialDialog(
-  internal val context: Context
-) : Dialog(context, Theme.inferTheme(context).styleRes) {
+  val appContext: Context
+) : Dialog(appContext, Theme.inferTheme(appContext).styleRes) {
+
+  val config: MutableMap<String, Any> = mutableMapOf(CONFIG_AUTO_DISMISS to true)
 
   internal val view: DialogLayout = inflate(context, R.layout.md_dialog_base)
-  internal var autoDismiss: Boolean = true
-    private set
-
-  // The base context is what we pass into the super constructor above.
-  // It doesn't contain any attributes of the Activity which contains the dialog,
-  // just internal attributes from library light/dark themes.
-  internal var baseContext: Context = super.getContext()
-
   internal var textViewMessage: TextView? = null
   internal var textInputLayout: TextInputLayout? = null
   internal var contentScrollView: DialogScrollView? = null
@@ -154,7 +151,7 @@ class MaterialDialog(
 
   @CheckResult
   fun noAutoDismiss(): MaterialDialog {
-    this.autoDismiss = false
+    this.config[CONFIG_AUTO_DISMISS] = false
     return this
   }
 

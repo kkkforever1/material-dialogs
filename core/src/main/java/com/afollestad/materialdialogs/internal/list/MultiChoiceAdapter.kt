@@ -13,6 +13,7 @@ import android.view.ViewGroup
 import android.widget.TextView
 import com.afollestad.materialdialogs.MaterialDialog
 import com.afollestad.materialdialogs.R
+import com.afollestad.materialdialogs.autoDismiss
 import com.afollestad.materialdialogs.list.MultiChoiceListener
 import com.afollestad.materialdialogs.list.getItemSelector
 import com.afollestad.materialdialogs.utilext.hasActionButtons
@@ -40,7 +41,7 @@ internal class MDMultiChoiceViewHolder(
         adapter.currentSelection = proposedSelection
       }
 
-      if (canSelect && dialog.autoDismiss && !dialog.hasActionButtons()) {
+      if (canSelect && dialog.autoDismiss() && !dialog.hasActionButtons()) {
         dialog.dismiss()
       }
     }
@@ -57,7 +58,7 @@ internal class MDMultiChoiceViewHolder(
  */
 internal class MDMultiChoiceAdapter(
   private var dialog: MaterialDialog,
-  internal var items: Array<CharSequence>,
+  internal var items: Array<String>,
   initialSelection: Array<Int>,
   internal var selectionChanged: MultiChoiceListener
 ) : RecyclerView.Adapter<MDMultiChoiceViewHolder>() {
@@ -84,7 +85,7 @@ internal class MDMultiChoiceAdapter(
     parent: ViewGroup,
     viewType: Int
   ): MDMultiChoiceViewHolder {
-    val listItemView: View = parent.inflate(dialog.context, R.layout.md_listitem_multichoice)
+    val listItemView: View = parent.inflate(dialog.appContext, R.layout.md_listitem_multichoice)
     return MDMultiChoiceViewHolder(
         listItemView, this, dialog
     )

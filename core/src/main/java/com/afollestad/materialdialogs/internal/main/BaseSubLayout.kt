@@ -4,7 +4,6 @@
  * Designed an developed by Aidan Follestad (afollestad)
  */
 
-
 package com.afollestad.materialdialogs.internal.main
 
 import android.content.Context
@@ -52,6 +51,6 @@ internal abstract class BaseSubLayout(
   ): Paint = dialogParent().debugPaint(color, stroke)
 
   private fun getDividerColor(): Int {
-    return getColor(dialogParent().dialog.baseContext, attr = R.attr.md_divider_color)
+    return getColor(dialogParent().dialog.context, attr = R.attr.md_divider_color)
   }
 }

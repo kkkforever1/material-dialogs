@@ -1,7 +1,10 @@
 package com.afollestad.materialdialogssample
 
+import android.Manifest.permission.READ_EXTERNAL_STORAGE
 import android.content.SharedPreferences
+import android.content.pm.PackageManager.PERMISSION_GRANTED
 import android.os.Bundle
+import android.support.v4.app.ActivityCompat
 import android.support.v7.app.AppCompatActivity
 import android.text.InputType
 import android.text.method.PasswordTransformationMethod
@@ -14,6 +17,8 @@ import com.afollestad.materialdialogs.MaterialDialog
 import com.afollestad.materialdialogs.checkbox.checkBoxPrompt
 import com.afollestad.materialdialogs.customview.customView
 import com.afollestad.materialdialogs.customview.getCustomView
+import com.afollestad.materialdialogs.file.fileChooser
+import com.afollestad.materialdialogs.file.folderChooser
 import com.afollestad.materialdialogs.input.input
 import com.afollestad.materialdialogs.list.listItems
 import com.afollestad.materialdialogs.list.listItemsMultiChoice
@@ -35,6 +40,8 @@ import kotlinx.android.synthetic.main.activity_main.buttons_stacked
 import kotlinx.android.synthetic.main.activity_main.buttons_stacked_checkboxPrompt
 import kotlinx.android.synthetic.main.activity_main.custom_view
 import kotlinx.android.synthetic.main.activity_main.custom_view_webview
+import kotlinx.android.synthetic.main.activity_main.file_chooser
+import kotlinx.android.synthetic.main.activity_main.folder_chooser
 import kotlinx.android.synthetic.main.activity_main.input
 import kotlinx.android.synthetic.main.activity_main.input_check_prompt
 import kotlinx.android.synthetic.main.activity_main.input_counter
@@ -70,9 +77,12 @@ class MainActivity : AppCompatActivity() {
     const val KEY_PREFS = "prefs"
     const val KEY_DARK_THEME = "dark_theme"
     const val KEY_DEBUG_MODE = "debug_mode"
+    const val FILE_REQUEST_CODE = 69
+    const val FOLDER_REQUEST_CODE = 69
   }
 
   private var debugMode = false
+  private var postPermissionRunnable: Runnable? = null
   private lateinit var prefs: SharedPreferences
 
   override fun onCreate(savedInstanceState: Bundle?) {
@@ -512,6 +522,42 @@ class MainActivity : AppCompatActivity() {
     custom_view.setOnClickListener { showCustomViewDialog() }
 
     custom_view_webview.setOnClickListener { showWebViewDialog() }
+
+    file_chooser.setOnClickListener {
+      if (!hasPermission(READ_EXTERNAL_STORAGE)) {
+        postPermissionRunnable = Runnable { file_chooser.performClick() }
+        ActivityCompat.requestPermissions(
+            this@MainActivity, arrayOf(READ_EXTERNAL_STORAGE), FILE_REQUEST_CODE
+        )
+        return@setOnClickListener
+      }
+
+      MaterialDialog(this).show {
+        fileChooser { file ->
+          toast("Selected file: ${file.absolutePath}")
+        }
+        negativeButton(android.R.string.cancel)
+        debugMode(debugMode)
+      }
+    }
+
+    folder_chooser.setOnClickListener {
+      if (!hasPermission(READ_EXTERNAL_STORAGE)) {
+        postPermissionRunnable = Runnable { folder_chooser.performClick() }
+        ActivityCompat.requestPermissions(
+            this@MainActivity, arrayOf(READ_EXTERNAL_STORAGE), FOLDER_REQUEST_CODE
+        )
+        return@setOnClickListener
+      }
+
+      MaterialDialog(this).show {
+        folderChooser { folder ->
+          toast("Selected folder: ${folder.absolutePath}")
+        }
+        negativeButton(android.R.string.cancel)
+        debugMode(debugMode)
+      }
+    }
   }
 
   private fun showCustomViewDialog() {
@@ -596,5 +642,16 @@ class MainActivity : AppCompatActivity() {
       }
     }
     return super.onOptionsItemSelected(item)
+  }
+
+  override fun onRequestPermissionsResult(
+    requestCode: Int,
+    permissions: Array<out String>,
+    grantResults: IntArray
+  ) {
+    super.onRequestPermissionsResult(requestCode, permissions, grantResults)
+    if (grantResults.isNotEmpty() && grantResults[0] == PERMISSION_GRANTED) {
+      postPermissionRunnable?.run()
+    }
   }
 }
