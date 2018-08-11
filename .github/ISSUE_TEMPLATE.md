@@ -16,8 +16,8 @@
 
 Also, please wrap your code with correct syntax highlighting.
 
-```java
-System.out.println("Hello, world!");
+```kotlin
+println("Hello, world!")
 ```
 
 ```xml
