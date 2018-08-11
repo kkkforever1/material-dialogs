@@ -13,7 +13,7 @@ import android.text.InputType
 import android.widget.EditText
 import com.afollestad.materialdialogs.MaterialDialog
 import com.afollestad.materialdialogs.R.layout
-import com.afollestad.materialdialogs.internal.button.DialogActionButtonLayout.Companion.INDEX_POSITIVE
+import com.afollestad.materialdialogs.WhichButton.POSITIVE
 import com.afollestad.materialdialogs.utilext.addContentScrollView
 import com.afollestad.materialdialogs.utilext.getString
 import com.afollestad.materialdialogs.utilext.inflate
@@ -66,8 +66,7 @@ internal fun MaterialDialog.invalidateInputMaxLength() {
   val maxLength = this.textInputLayout!!.counterMaxLength
   val currentLength = editText.text.length
   if (maxLength > 0) {
-    val positiveBtn = view.buttonsLayout.actionButtons[INDEX_POSITIVE]
-    positiveBtn.isEnabled = currentLength <= maxLength
+    setActionButtonEnabled(POSITIVE, currentLength <= maxLength)
   }
 }
 
