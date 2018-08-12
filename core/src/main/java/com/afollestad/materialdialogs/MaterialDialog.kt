@@ -76,7 +76,7 @@ class MaterialDialog(
    * Shows an icon to the left of the dialog title.
    *
    * @param iconRes The drawable resource to display as the icon.
-   * @param icon The drawbale to display as the icon.
+   * @param icon The drawable to display as the icon.
    */
   @CheckResult
   fun icon(
@@ -155,7 +155,7 @@ class MaterialDialog(
   }
 
   /**
-   * Shows a  negative action button, to the left of the positive action button (or at the far
+   * Shows a negative action button, to the left of the positive action button (or at the far
    * right if there is no positive action button).
    *
    * @param negativeRes The string resource to display on the title.
@@ -275,6 +275,7 @@ class MaterialDialog(
       val adapter = getListAdapter() as? DialogAdapter<*, *>
       adapter?.positiveButtonClicked()
 
+      @Suppress("UNCHECKED_CAST")
       val inputCallback = config[KEY_INPUT_CALLBACK] as? InputCallback
       if (inputCallback != null) {
         inputCallback.invoke(this, textInputLayout!!.editText!!.text)
