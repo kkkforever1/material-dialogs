@@ -30,3 +30,6 @@ dependencies {
 }
 
 apply from: '../spotless.gradle'
+
+ext.shard = 'commons'
+apply from: '../bintray.gradle'
