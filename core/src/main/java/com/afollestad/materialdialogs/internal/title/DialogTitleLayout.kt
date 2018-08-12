@@ -8,6 +8,7 @@ package com.afollestad.materialdialogs.internal.title
 
 import android.content.Context
 import android.graphics.Canvas
+import android.graphics.Color
 import android.util.AttributeSet
 import android.view.View.MeasureSpec.AT_MOST
 import android.view.View.MeasureSpec.EXACTLY
@@ -70,13 +71,14 @@ internal class DialogTitleLayout(
           MeasureSpec.makeMeasureSpec(iconSize, EXACTLY),
           MeasureSpec.makeMeasureSpec(iconSize, EXACTLY)
       )
-      titleMaxWidth -= (iconView.measuredWidth + iconMargin)
+      titleMaxWidth -= iconView.measuredWidth
     }
 
     titleView.measure(
         MeasureSpec.makeMeasureSpec(titleMaxWidth, AT_MOST),
         MeasureSpec.makeMeasureSpec(0, UNSPECIFIED)
     )
+    titleView.setBackgroundColor(Color.RED)
 
     val iconViewHeight =
       if (iconView.isVisible()) iconView.measuredHeight else 0
