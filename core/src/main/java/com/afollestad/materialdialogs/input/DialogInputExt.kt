@@ -55,6 +55,7 @@ fun MaterialDialog.input(
   }
 
   editText.textChanged {
+    // TODO option to only call on positive button click
     callback?.invoke(this@input, it)
     invalidateInputMaxLength()
   }
