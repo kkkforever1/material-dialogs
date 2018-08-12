@@ -45,10 +45,10 @@ fun MaterialDialog.customView(
   assertOneSet(viewRes, view)
   if (scrollable) {
     addContentScrollView()
-    this.contentCustomView = view ?: inflate(context, viewRes!!, this.contentScrollViewFrame!!)
+    this.contentCustomView = view ?: inflate(viewRes!!, this.contentScrollViewFrame!!)
     this.contentScrollViewFrame!!.addView(this.contentCustomView)
   } else {
-    this.contentCustomView = view ?: inflate(context, viewRes!!, this.view)
+    this.contentCustomView = view ?: inflate(viewRes!!, this.view)
     this.view.addView(this.contentCustomView, 1)
   }
   return this

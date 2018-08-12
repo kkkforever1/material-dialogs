@@ -33,12 +33,11 @@ import com.afollestad.materialdialogs.R
 import com.afollestad.materialdialogs.autoDismiss
 
 @Suppress("UNCHECKED_CAST")
-internal fun <T> inflate(
-  context: Context,
+internal fun <T> MaterialDialog.inflate(
   @LayoutRes res: Int,
   root: ViewGroup? = null
 ): T {
-  return LayoutInflater.from(context).inflate(res, root, false) as T
+  return LayoutInflater.from(windowContext).inflate(res, root, false) as T
 }
 
 internal fun assertOneSet(
@@ -100,7 +99,7 @@ internal fun MaterialDialog.addContentScrollView() {
   if (this.contentScrollView != null) {
     return
   }
-  this.contentScrollView = inflate(context, R.layout.md_dialog_stub_scrollview, this.view)
+  this.contentScrollView = inflate(R.layout.md_dialog_stub_scrollview, this.view)
   this.contentScrollView!!.rootView = this.view
   this.contentScrollViewFrame = this.contentScrollView!![0]
   this.view.addView(this.contentScrollView, 1)
@@ -125,7 +124,7 @@ internal fun MaterialDialog.preShow() {
 @ColorInt internal fun MaterialDialog.getColor(
   @ColorRes res: Int? = null,
   @AttrRes attr: Int? = null
-): Int = getColor(context, res, attr)
+): Int = getColor(windowContext, res, attr)
 
 internal fun MaterialDialog.getString(
   @StringRes res: Int? = null,
@@ -160,7 +159,7 @@ internal fun getDrawable(
 
 internal fun MaterialDialog.getStringArray(@ArrayRes res: Int?): Array<String> {
   if (res == null) return emptyArray()
-  return context.resources.getStringArray(res)
+  return windowContext.resources.getStringArray(res)
 }
 
 internal fun MaterialDialog.hasActionButtons(): Boolean {
@@ -173,7 +172,7 @@ internal fun MaterialDialog.setIcon(
   @DrawableRes iconRes: Int?,
   icon: Drawable?
 ) {
-  val drawable = getDrawable(context, res = iconRes, fallback = icon)
+  val drawable = getDrawable(windowContext, res = iconRes, fallback = icon)
   if (drawable != null) {
     (imageView.parent as View).visibility = View.VISIBLE
     imageView.visibility = View.VISIBLE

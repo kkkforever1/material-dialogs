@@ -178,10 +178,10 @@ private fun MaterialDialog.addContentRecyclerView() {
     return
   }
   this.contentRecyclerView = inflate(
-      windowContext, R.layout.md_dialog_stub_recyclerview, this.view
+      R.layout.md_dialog_stub_recyclerview, this.view
   )
   this.contentRecyclerView!!.rootView = this.view
   this.contentRecyclerView!!.layoutManager =
-      LinearLayoutManager(context)
+      LinearLayoutManager(windowContext)
   this.view.addView(this.contentRecyclerView, 1)
 }

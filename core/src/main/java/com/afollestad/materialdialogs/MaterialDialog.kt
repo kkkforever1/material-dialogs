@@ -57,7 +57,7 @@ class MaterialDialog(
   /** A named config map, used like tags for extensions. */
   val config: MutableMap<String, Any> = mutableMapOf(CONFIG_AUTO_DISMISS to true)
 
-  internal val view: DialogLayout = inflate(context, R.layout.md_dialog_base)
+  internal val view: DialogLayout = inflate(R.layout.md_dialog_base)
   internal var textViewMessage: TextView? = null
   internal var textInputLayout: TextInputLayout? = null
   internal var contentScrollView: DialogScrollView? = null
@@ -286,7 +286,6 @@ class MaterialDialog(
   private fun addContentMessageView(@StringRes res: Int?, text: CharSequence?) {
     if (this.textViewMessage == null) {
       this.textViewMessage = inflate(
-          windowContext,
           R.layout.md_dialog_stub_message,
           this.contentScrollViewFrame!!
       )
