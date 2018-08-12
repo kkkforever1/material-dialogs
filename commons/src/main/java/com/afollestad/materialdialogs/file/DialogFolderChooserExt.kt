@@ -8,6 +8,7 @@ package com.afollestad.materialdialogs.file
 
 import android.annotation.SuppressLint
 import android.os.Environment
+import android.os.Environment.getExternalStorageDirectory
 import android.support.annotation.CheckResult
 import com.afollestad.materialdialogs.MaterialDialog
 import com.afollestad.materialdialogs.list.listItems
@@ -22,7 +23,7 @@ private const val CONFIG_CURRENT_FOLDER = "current_folder"
 
 @CheckResult
 fun MaterialDialog.folderChooser(
-  initialDirectory: File = Environment.getExternalStorageDirectory(),
+  initialDirectory: File = getExternalStorageDirectory(),
   filter: FileFilter = null,
   selection: FileCallback = null
 ): MaterialDialog {
