@@ -63,7 +63,7 @@ fun MaterialDialog.input(
   return this
 }
 
-internal fun MaterialDialog.invalidateInputMaxLength() {
+private fun MaterialDialog.invalidateInputMaxLength() {
   val editText = this.textInputLayout!!.editText!!
   val maxLength = this.textInputLayout!!.counterMaxLength
   val currentLength = editText.text.length

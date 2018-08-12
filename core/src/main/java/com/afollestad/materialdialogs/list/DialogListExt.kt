@@ -14,8 +14,8 @@ import android.support.v7.widget.LinearLayoutManager
 import android.support.v7.widget.RecyclerView
 import com.afollestad.materialdialogs.MaterialDialog
 import com.afollestad.materialdialogs.R
-import com.afollestad.materialdialogs.internal.list.PlainListDialogAdapter
 import com.afollestad.materialdialogs.internal.list.MultiChoiceDialogAdapter
+import com.afollestad.materialdialogs.internal.list.PlainListDialogAdapter
 import com.afollestad.materialdialogs.internal.list.SingleChoiceDialogAdapter
 import com.afollestad.materialdialogs.utilext.assertOneSet
 import com.afollestad.materialdialogs.utilext.getDrawable
@@ -56,6 +56,11 @@ fun MaterialDialog.getListAdapter(): RecyclerView.Adapter<*>? {
   return this.contentRecyclerView?.adapter
 }
 
+/**
+ * Sets a custom list adapter to render custom list content.
+ *
+ * Cannot be used in combination with message, input, and some other types of dialogs.
+ */
 @CheckResult
 fun MaterialDialog.customListAdapter(
   adapter: RecyclerView.Adapter<*>
@@ -67,11 +72,18 @@ fun MaterialDialog.customListAdapter(
   return this
 }
 
+/**
+ * @param arrayRes The string array resource to populate the list with.
+ * @param array The literal string array resource to populate the list with.
+ * @param waitForPositiveButton When true, the [selection] listener won't be called until an item
+ *    is selected and the positive action button is pressed.
+ * @param selection A listener invoked when an item in the list is selected.
+ */
 @CheckResult
 fun MaterialDialog.listItems(
   @ArrayRes arrayRes: Int? = null,
   array: Array<String>? = null,
-  waitForActionButton: Boolean = true,
+  waitForPositiveButton: Boolean = true,
   selection: ItemListener = null
 ): MaterialDialog {
   assertOneSet(arrayRes, array)
@@ -90,19 +102,27 @@ fun MaterialDialog.listItems(
       PlainListDialogAdapter(
           dialog = this,
           items = items,
-          waitForActionButton = waitForActionButton,
+          waitForActionButton = waitForPositiveButton,
           selection = selection
       )
   )
 }
 
+/**
+ * @param arrayRes The string array resource to populate the list with.
+ * @param array The literal string array resource to populate the list with.
+ * @param initialSelection The initially selected item's index.
+ * @param waitForPositiveButton When true, the [selection] listener won't be called until
+ *    the positive action button is pressed.
+ * @param selection A listener invoked when an item in the list is selected.
+ */
 @CheckResult
 fun MaterialDialog.listItemsSingleChoice(
   @ArrayRes arrayRes: Int? = null,
   array: Array<String>? = null,
   initialSelection: Int = -1,
-  waitForActionButton: Boolean = true,
-  selectionChanged: SingleChoiceListener = null
+  waitForPositiveButton: Boolean = true,
+  selection: SingleChoiceListener = null
 ): MaterialDialog {
   assertOneSet(arrayRes, array)
   val items = array ?: getStringArray(arrayRes)
@@ -112,7 +132,7 @@ fun MaterialDialog.listItemsSingleChoice(
       this.contentRecyclerView!!.adapter is SingleChoiceDialogAdapter
   ) {
     val adapter = this.contentRecyclerView!!.adapter as SingleChoiceDialogAdapter
-    adapter.replaceItems(items, selectionChanged)
+    adapter.replaceItems(items, selection)
     return this
   }
 
@@ -121,19 +141,27 @@ fun MaterialDialog.listItemsSingleChoice(
           dialog = this,
           items = items,
           initialSelection = initialSelection,
-          waitForActionButton = waitForActionButton,
-          selection = selectionChanged
+          waitForActionButton = waitForPositiveButton,
+          selection = selection
       )
   )
 }
 
+/**
+ * @param arrayRes The string array resource to populate the list with.
+ * @param array The literal string array resource to populate the list with.
+ * @param initialSelection The initially selected item indices.
+ * @param waitForPositiveButton When true, the [selection] listener won't be called until
+ *    the positive action button is pressed.
+ * @param selection A listener invoked when an item in the list is selected.
+ */
 @CheckResult
 fun MaterialDialog.listItemsMultiChoice(
   @ArrayRes arrayRes: Int? = null,
   array: Array<String>? = null,
   initialSelection: Array<Int> = emptyArray(),
-  waitForActionButton: Boolean = true,
-  selectionChanged: MultiChoiceListener = null
+  waitForPositiveButton: Boolean = true,
+  selection: MultiChoiceListener = null
 ): MaterialDialog {
   assertOneSet(arrayRes, array)
   val items = array ?: getStringArray(arrayRes)
@@ -143,7 +171,7 @@ fun MaterialDialog.listItemsMultiChoice(
       this.contentRecyclerView!!.adapter is MultiChoiceDialogAdapter
   ) {
     val adapter = this.contentRecyclerView!!.adapter as MultiChoiceDialogAdapter
-    adapter.replaceItems(items, selectionChanged)
+    adapter.replaceItems(items, selection)
     return this
   }
 
@@ -152,8 +180,8 @@ fun MaterialDialog.listItemsMultiChoice(
           dialog = this,
           items = items,
           initialSelection = initialSelection,
-          waitForActionButton = waitForActionButton,
-          selection = selectionChanged
+          waitForActionButton = waitForPositiveButton,
+          selection = selection
       )
   )
 }
