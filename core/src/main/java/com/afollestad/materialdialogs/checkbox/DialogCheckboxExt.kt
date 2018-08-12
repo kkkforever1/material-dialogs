@@ -35,7 +35,7 @@ fun MaterialDialog.checkBoxPrompt(
   onToggle: ((Boolean) -> Unit)?
 ): MaterialDialog {
   assertOneSet(textRes, text)
-  with(view.buttonsLayout.checkBoxPrompt) {
+  view.buttonsLayout.checkBoxPrompt.apply {
     this.visibility = View.VISIBLE
     this.text = text ?: getString(textRes)
     this.isChecked = isCheckedDefault

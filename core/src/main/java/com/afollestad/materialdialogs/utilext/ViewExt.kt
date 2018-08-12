@@ -64,7 +64,7 @@ internal fun <T : View> T.updateMargin(
 }
 
 internal inline fun <T : View> T.waitForLayout(crossinline f: () -> Unit) =
-  with(viewTreeObserver) {
+  viewTreeObserver.apply {
     addOnGlobalLayoutListener(object : ViewTreeObserver.OnGlobalLayoutListener {
       override fun onGlobalLayout() {
         removeOnGlobalLayoutListener(this)

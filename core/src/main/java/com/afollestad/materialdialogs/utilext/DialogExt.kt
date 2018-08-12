@@ -73,7 +73,7 @@ internal fun MaterialDialog.setWindowConstraints() {
   val windowWidth = size.x
   val windowHeight = size.y
 
-  with(context.resources) {
+  context.resources.apply {
     val windowVerticalPadding = getDimensionPixelSize(
         R.dimen.md_dialog_vertical_margin
     )
@@ -107,7 +107,7 @@ internal fun MaterialDialog.addContentScrollView() {
 }
 
 internal fun MaterialDialog.preShow() {
-  with(this.view) {
+  this.view.apply {
     if (titleLayout.shouldNotBeVisible()) {
       contentView.updatePadding(
           top = frameMarginVerticalLess,
