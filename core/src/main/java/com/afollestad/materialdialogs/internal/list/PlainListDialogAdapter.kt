@@ -23,9 +23,9 @@ import com.afollestad.materialdialogs.utilext.inflate
 private const val KEY_ACTIVATED_INDEX = "activated_index"
 
 /** @author Aidan Follestad (afollestad) */
-internal class MDListViewHolder(
+internal class PlainListViewHolder(
   itemView: View,
-  private val adapter: MDListAdapter,
+  private val adapter: PlainListDialogAdapter,
   private val dialog: MaterialDialog,
   private val waitForActionButton: Boolean
 ) : RecyclerView.ViewHolder(itemView), OnClickListener {
@@ -60,19 +60,19 @@ internal class MDListViewHolder(
  *
  * @author Aidan Follestad (afollestad)
  */
-internal class MDListAdapter(
+internal class PlainListDialogAdapter(
   private var dialog: MaterialDialog,
   internal var items: Array<String>,
   private var waitForActionButton: Boolean,
   internal var selection: ItemListener
-) : RecyclerView.Adapter<MDListViewHolder>(), DialogAdapter<String, ItemListener> {
+) : RecyclerView.Adapter<PlainListViewHolder>(), DialogAdapter<String, ItemListener> {
 
   override fun onCreateViewHolder(
     parent: ViewGroup,
     viewType: Int
-  ): MDListViewHolder {
+  ): PlainListViewHolder {
     val listItemView: View = parent.inflate(dialog.windowContext, R.layout.md_listitem)
-    return MDListViewHolder(
+    return PlainListViewHolder(
         itemView = listItemView,
         adapter = this,
         dialog = dialog,
@@ -85,7 +85,7 @@ internal class MDListAdapter(
   }
 
   override fun onBindViewHolder(
-    holder: MDListViewHolder,
+    holder: PlainListViewHolder,
     position: Int
   ) {
     val titleValue = items[position]

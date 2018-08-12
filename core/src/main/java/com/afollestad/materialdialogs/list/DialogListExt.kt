@@ -14,9 +14,9 @@ import android.support.v7.widget.LinearLayoutManager
 import android.support.v7.widget.RecyclerView
 import com.afollestad.materialdialogs.MaterialDialog
 import com.afollestad.materialdialogs.R
-import com.afollestad.materialdialogs.internal.list.MDListAdapter
-import com.afollestad.materialdialogs.internal.list.MDMultiChoiceAdapter
-import com.afollestad.materialdialogs.internal.list.MDSingleChoiceAdapter
+import com.afollestad.materialdialogs.internal.list.PlainListDialogAdapter
+import com.afollestad.materialdialogs.internal.list.MultiChoiceDialogAdapter
+import com.afollestad.materialdialogs.internal.list.SingleChoiceDialogAdapter
 import com.afollestad.materialdialogs.utilext.assertOneSet
 import com.afollestad.materialdialogs.utilext.getDrawable
 import com.afollestad.materialdialogs.utilext.getStringArray
@@ -79,15 +79,15 @@ fun MaterialDialog.listItems(
 
   if (this.contentRecyclerView != null &&
       this.contentRecyclerView!!.adapter != null &&
-      this.contentRecyclerView!!.adapter is MDListAdapter
+      this.contentRecyclerView!!.adapter is PlainListDialogAdapter
   ) {
-    val adapter = this.contentRecyclerView!!.adapter as MDListAdapter
+    val adapter = this.contentRecyclerView!!.adapter as PlainListDialogAdapter
     adapter.replaceItems(items, selection)
     return this
   }
 
   return customListAdapter(
-      MDListAdapter(
+      PlainListDialogAdapter(
           dialog = this,
           items = items,
           waitForActionButton = waitForActionButton,
@@ -109,15 +109,15 @@ fun MaterialDialog.listItemsSingleChoice(
 
   if (this.contentRecyclerView != null &&
       this.contentRecyclerView!!.adapter != null &&
-      this.contentRecyclerView!!.adapter is MDSingleChoiceAdapter
+      this.contentRecyclerView!!.adapter is SingleChoiceDialogAdapter
   ) {
-    val adapter = this.contentRecyclerView!!.adapter as MDSingleChoiceAdapter
+    val adapter = this.contentRecyclerView!!.adapter as SingleChoiceDialogAdapter
     adapter.replaceItems(items, selectionChanged)
     return this
   }
 
   return customListAdapter(
-      MDSingleChoiceAdapter(
+      SingleChoiceDialogAdapter(
           dialog = this,
           items = items,
           initialSelection = initialSelection,
@@ -140,15 +140,15 @@ fun MaterialDialog.listItemsMultiChoice(
 
   if (this.contentRecyclerView != null &&
       this.contentRecyclerView!!.adapter != null &&
-      this.contentRecyclerView!!.adapter is MDMultiChoiceAdapter
+      this.contentRecyclerView!!.adapter is MultiChoiceDialogAdapter
   ) {
-    val adapter = this.contentRecyclerView!!.adapter as MDMultiChoiceAdapter
+    val adapter = this.contentRecyclerView!!.adapter as MultiChoiceDialogAdapter
     adapter.replaceItems(items, selectionChanged)
     return this
   }
 
   return customListAdapter(
-      MDMultiChoiceAdapter(
+      MultiChoiceDialogAdapter(
           dialog = this,
           items = items,
           initialSelection = initialSelection,

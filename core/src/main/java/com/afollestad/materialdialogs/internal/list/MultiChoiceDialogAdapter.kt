@@ -22,9 +22,9 @@ import com.afollestad.materialdialogs.utilext.inflate
 import com.afollestad.materialdialogs.utilext.pullIndices
 
 /** @author Aidan Follestad (afollestad) */
-internal class MDMultiChoiceViewHolder(
+internal class MultiChoiceViewHolder(
   itemView: View,
-  private val adapter: MDMultiChoiceAdapter,
+  private val adapter: MultiChoiceDialogAdapter,
   private val dialog: MaterialDialog,
   private val waitForActionButton: Boolean
 ) : RecyclerView.ViewHolder(itemView), OnClickListener {
@@ -63,13 +63,13 @@ internal class MDMultiChoiceViewHolder(
  *
  * @author Aidan Follestad (afollestad)
  */
-internal class MDMultiChoiceAdapter(
+internal class MultiChoiceDialogAdapter(
   private var dialog: MaterialDialog,
   internal var items: Array<String>,
   initialSelection: Array<Int>,
   private val waitForActionButton: Boolean,
   internal var selection: MultiChoiceListener
-) : RecyclerView.Adapter<MDMultiChoiceViewHolder>(), DialogAdapter<String, MultiChoiceListener> {
+) : RecyclerView.Adapter<MultiChoiceViewHolder>(), DialogAdapter<String, MultiChoiceListener> {
 
   var currentSelection: Array<Int> = initialSelection
     set(value) {
@@ -92,9 +92,9 @@ internal class MDMultiChoiceAdapter(
   override fun onCreateViewHolder(
     parent: ViewGroup,
     viewType: Int
-  ): MDMultiChoiceViewHolder {
+  ): MultiChoiceViewHolder {
     val listItemView: View = parent.inflate(dialog.windowContext, R.layout.md_listitem_multichoice)
-    return MDMultiChoiceViewHolder(
+    return MultiChoiceViewHolder(
         itemView = listItemView,
         adapter = this,
         dialog = dialog,
@@ -107,7 +107,7 @@ internal class MDMultiChoiceAdapter(
   }
 
   override fun onBindViewHolder(
-    holder: MDMultiChoiceViewHolder,
+    holder: MultiChoiceViewHolder,
     position: Int
   ) {
     holder.controlView.isChecked = currentSelection.contains(position)

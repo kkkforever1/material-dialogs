@@ -21,9 +21,9 @@ import com.afollestad.materialdialogs.utilext.hasActionButtons
 import com.afollestad.materialdialogs.utilext.inflate
 
 /** @author Aidan Follestad (afollestad) */
-internal class MDSingleChoiceViewHolder(
+internal class SingleChoiceViewHolder(
   itemView: View,
-  private val adapter: MDSingleChoiceAdapter,
+  private val adapter: SingleChoiceDialogAdapter,
   private val dialog: MaterialDialog,
   private val waitForActionButton: Boolean
 ) : RecyclerView.ViewHolder(itemView), OnClickListener {
@@ -55,13 +55,13 @@ internal class MDSingleChoiceViewHolder(
  *
  * @author Aidan Follestad (afollestad)
  */
-internal class MDSingleChoiceAdapter(
+internal class SingleChoiceDialogAdapter(
   private var dialog: MaterialDialog,
   internal var items: Array<String>,
   initialSelection: Int,
   private val waitForActionButton: Boolean,
   internal var selection: SingleChoiceListener
-) : RecyclerView.Adapter<MDSingleChoiceViewHolder>(), DialogAdapter<String, SingleChoiceListener> {
+) : RecyclerView.Adapter<SingleChoiceViewHolder>(), DialogAdapter<String, SingleChoiceListener> {
 
   var currentSelection: Int = initialSelection
     set(value) {
@@ -74,9 +74,9 @@ internal class MDSingleChoiceAdapter(
   override fun onCreateViewHolder(
     parent: ViewGroup,
     viewType: Int
-  ): MDSingleChoiceViewHolder {
+  ): SingleChoiceViewHolder {
     val listItemView: View = parent.inflate(dialog.windowContext, R.layout.md_listitem_singlechoice)
-    return MDSingleChoiceViewHolder(
+    return SingleChoiceViewHolder(
         itemView = listItemView,
         adapter = this,
         dialog = dialog,
@@ -89,7 +89,7 @@ internal class MDSingleChoiceAdapter(
   }
 
   override fun onBindViewHolder(
-    holder: MDSingleChoiceViewHolder,
+    holder: SingleChoiceViewHolder,
     position: Int
   ) {
     holder.controlView.isChecked = currentSelection == position
