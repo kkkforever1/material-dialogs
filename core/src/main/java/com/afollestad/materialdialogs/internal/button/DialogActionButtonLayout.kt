@@ -88,7 +88,7 @@ internal class DialogActionButtonLayout(
 
     // Buttons plus any spacing around that makes up the "frame"
     val baseContext = dialogParent().dialog.context
-    val appContext = dialogParent().dialog.appContext
+    val appContext = dialogParent().dialog.windowContext
     for (button in visibleButtons) {
       button.update(
           baseContext = baseContext,

@@ -62,22 +62,6 @@
         />
 
     <Button
-        android:id="@+id/basic_long_buttons"
-        android:layout_width="match_parent"
-        android:layout_height="@dimen/sample_button_height"
-        android:layout_marginTop="@dimen/sample_button_spacing"
-        android:text="Basic Long + Buttons"
-        />
-
-    <Button
-        android:id="@+id/basic_long_titled"
-        android:layout_width="match_parent"
-        android:layout_height="@dimen/sample_button_height"
-        android:layout_marginTop="@dimen/sample_button_spacing"
-        android:text="Basic Long + Title"
-        />
-
-    <Button
         android:id="@+id/basic_long_titled_buttons"
         android:layout_width="match_parent"
         android:layout_height="@dimen/sample_button_height"
@@ -91,14 +75,6 @@
         android:layout_height="@dimen/sample_button_height"
         android:layout_marginTop="@dimen/sample_button_spacing"
         android:text="Basic + Icon + Buttons"
-        />
-
-    <Button
-        android:id="@+id/basic_checkbox_buttons"
-        android:layout_width="match_parent"
-        android:layout_height="@dimen/sample_button_height"
-        android:layout_marginTop="@dimen/sample_button_spacing"
-        android:text="Basic + Checkbox + Buttons"
         />
 
     <Button
@@ -236,27 +212,11 @@
         />
 
     <Button
-        android:id="@+id/single_choice"
-        android:layout_width="match_parent"
-        android:layout_height="@dimen/sample_button_height"
-        android:layout_marginTop="@dimen/sample_button_spacing"
-        android:text="Single Choice"
-        />
-
-    <Button
         android:id="@+id/single_choice_titled"
         android:layout_width="match_parent"
         android:layout_height="@dimen/sample_button_height"
         android:layout_marginTop="@dimen/sample_button_spacing"
         android:text="Single Choice + Title"
-        />
-
-    <Button
-        android:id="@+id/single_choice_buttons"
-        android:layout_width="match_parent"
-        android:layout_height="@dimen/sample_button_height"
-        android:layout_marginTop="@dimen/sample_button_spacing"
-        android:text="Single Choice + Buttons"
         />
 
     <Button

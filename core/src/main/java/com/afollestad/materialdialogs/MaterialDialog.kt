@@ -18,17 +18,23 @@ import android.support.design.widget.TextInputLayout
 import android.view.View
 import android.widget.LinearLayout
 import android.widget.TextView
+import com.afollestad.materialdialogs.WhichButton.NEGATIVE
+import com.afollestad.materialdialogs.WhichButton.NEUTRAL
+import com.afollestad.materialdialogs.WhichButton.POSITIVE
 import com.afollestad.materialdialogs.internal.button.DialogActionButtonLayout.Companion.INDEX_NEGATIVE
 import com.afollestad.materialdialogs.internal.button.DialogActionButtonLayout.Companion.INDEX_NEUTRAL
 import com.afollestad.materialdialogs.internal.button.DialogActionButtonLayout.Companion.INDEX_POSITIVE
+import com.afollestad.materialdialogs.internal.list.DialogAdapter
 import com.afollestad.materialdialogs.internal.list.DialogRecyclerView
 import com.afollestad.materialdialogs.internal.main.DialogLayout
 import com.afollestad.materialdialogs.internal.main.DialogScrollView
+import com.afollestad.materialdialogs.list.getListAdapter
 import com.afollestad.materialdialogs.utilext.addContentScrollView
 import com.afollestad.materialdialogs.utilext.assertOneSet
 import com.afollestad.materialdialogs.utilext.getString
 import com.afollestad.materialdialogs.utilext.inflate
 import com.afollestad.materialdialogs.utilext.preShow
+import com.afollestad.materialdialogs.utilext.setActionButtonText
 import com.afollestad.materialdialogs.utilext.setDefaults
 import com.afollestad.materialdialogs.utilext.setIcon
 import com.afollestad.materialdialogs.utilext.setText
@@ -41,8 +47,8 @@ internal fun MaterialDialog.autoDismiss() = config[CONFIG_AUTO_DISMISS] as Boole
 
 /** @author Aidan Follestad (afollestad) */
 class MaterialDialog(
-  val appContext: Context
-) : Dialog(appContext, Theme.inferTheme(appContext).styleRes) {
+  val windowContext: Context
+) : Dialog(windowContext, Theme.inferTheme(windowContext).styleRes) {
 
   val config: MutableMap<String, Any> = mutableMapOf(CONFIG_AUTO_DISMISS to true)
 
@@ -105,12 +111,15 @@ class MaterialDialog(
     positiveText: CharSequence? = null,
     click: ((MaterialDialog) -> (Unit))? = null
   ): MaterialDialog {
-    setText(
+    setActionButtonText(
         view.buttonsLayout.actionButtons[INDEX_POSITIVE],
         textRes = positiveRes,
         text = positiveText,
         fallback = android.R.string.ok,
-        click = click
+        click = {
+          buttonClicked(POSITIVE)
+          click?.invoke(it)
+        }
     )
     return this
   }
@@ -121,12 +130,15 @@ class MaterialDialog(
     negativeText: CharSequence? = null,
     click: ((MaterialDialog) -> (Unit))? = null
   ): MaterialDialog {
-    setText(
+    setActionButtonText(
         view.buttonsLayout.actionButtons[INDEX_NEGATIVE],
         textRes = negativeRes,
         text = negativeText,
         fallback = android.R.string.cancel,
-        click = click
+        click = {
+          buttonClicked(NEGATIVE)
+          click?.invoke(it)
+        }
     )
     return this
   }
@@ -142,11 +154,14 @@ class MaterialDialog(
     click: ((MaterialDialog) -> (Unit))? = null
   ): MaterialDialog {
     assertOneSet(neutralRes, neutralText)
-    setText(
+    setActionButtonText(
         view.buttonsLayout.actionButtons[INDEX_NEUTRAL],
         textRes = neutralRes,
         text = neutralText,
-        click = click
+        click = {
+          buttonClicked(NEUTRAL)
+          click?.invoke(it)
+        }
     )
     return this
   }
@@ -200,10 +215,17 @@ class MaterialDialog(
     return this
   }
 
+  private fun buttonClicked(which: WhichButton) {
+    if (which == POSITIVE) {
+      val adapter = getListAdapter() as? DialogAdapter<*, *>
+      adapter?.positiveButtonClicked()
+    }
+  }
+
   private fun addContentMessageView(@StringRes res: Int?, text: CharSequence?) {
     if (this.textViewMessage == null) {
       this.textViewMessage = inflate(
-          context,
+          windowContext,
           R.layout.md_dialog_stub_message,
           this.contentScrollViewFrame!!
       )

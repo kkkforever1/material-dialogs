@@ -81,7 +81,7 @@ private fun MaterialDialog.addInputField() {
   }
   addContentScrollView()
   this.textInputLayout = inflate(
-      context, layout.md_dialog_stub_input, this.contentScrollViewFrame!!
+      windowContext, layout.md_dialog_stub_input, this.contentScrollViewFrame!!
   )
   this.contentScrollViewFrame!!.addView(this.textInputLayout)
 }

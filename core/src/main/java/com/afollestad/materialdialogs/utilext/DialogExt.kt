@@ -130,7 +130,7 @@ internal fun MaterialDialog.getString(
 ): CharSequence? {
   val resourceId = res ?: (fallback ?: 0)
   if (resourceId == 0) return null
-  return context.resources.getText(resourceId)
+  return windowContext.resources.getText(resourceId)
 }
 
 internal fun getDrawable(
@@ -184,6 +184,22 @@ internal fun MaterialDialog.setText(
   textView: TextView,
   @StringRes textRes: Int? = null,
   text: CharSequence? = null,
+  @StringRes fallback: Int = 0
+) {
+  val value = text ?: getString(textRes, fallback)
+  if (value != null) {
+    (textView.parent as View).visibility = View.VISIBLE
+    textView.visibility = View.VISIBLE
+    textView.text = value
+  } else {
+    textView.visibility = View.GONE
+  }
+}
+
+internal fun MaterialDialog.setActionButtonText(
+  textView: TextView,
+  @StringRes textRes: Int? = null,
+  text: CharSequence? = null,
   @StringRes fallback: Int = 0,
   click: ((MaterialDialog) -> (Unit))? = null,
   allowDismiss: Boolean = true
@@ -202,7 +218,7 @@ internal fun MaterialDialog.setText(
         dismiss()
       }
       if (click != null) {
-        click(this@setText)
+        click(this@setActionButtonText)
       }
     }
   }

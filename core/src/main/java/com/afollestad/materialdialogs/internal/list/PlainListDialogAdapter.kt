@@ -1,0 +1,115 @@
+/*
+ * Licensed under Apache-2.0
+ *
+ * Designed an developed by Aidan Follestad (afollestad)
+ */
+
+package com.afollestad.materialdialogs.internal.list
+
+import android.support.v7.widget.RecyclerView
+import android.view.View
+import android.view.View.OnClickListener
+import android.view.ViewGroup
+import android.widget.TextView
+import com.afollestad.materialdialogs.MaterialDialog
+import com.afollestad.materialdialogs.R
+import com.afollestad.materialdialogs.autoDismiss
+import com.afollestad.materialdialogs.list.ItemListener
+import com.afollestad.materialdialogs.list.getItemSelector
+import com.afollestad.materialdialogs.utilext.get
+import com.afollestad.materialdialogs.utilext.hasActionButtons
+import com.afollestad.materialdialogs.utilext.inflate
+
+private const val KEY_ACTIVATED_INDEX = "activated_index"
+
+/** @author Aidan Follestad (afollestad) */
+internal class MDListViewHolder(
+  itemView: View,
+  private val adapter: MDListAdapter,
+  private val dialog: MaterialDialog,
+  private val waitForActionButton: Boolean
+) : RecyclerView.ViewHolder(itemView), OnClickListener {
+  init {
+    itemView.setOnClickListener(this)
+  }
+
+  val titleView: TextView = (itemView as ViewGroup)[0]!!
+
+  override fun onClick(view: View) {
+    if (waitForActionButton && dialog.hasActionButtons()) {
+      // Wait for action button, mark clicked item as activated so that we can call the selection
+      // listener when the positive action button is pressed.
+      val lastActivated = dialog.config[KEY_ACTIVATED_INDEX] as? Int
+      dialog.config[KEY_ACTIVATED_INDEX] = adapterPosition
+      if (lastActivated != null) {
+        adapter.notifyItemChanged(lastActivated)
+      }
+      adapter.notifyItemChanged(adapterPosition)
+    } else {
+      // Don't wait for action button, call listener and dismiss if auto dismiss is applicable
+      adapter.selection?.invoke(dialog, adapterPosition, adapter.items[adapterPosition])
+      if (dialog.autoDismiss() && !dialog.hasActionButtons()) {
+        dialog.dismiss()
+      }
+    }
+  }
+}
+
+/**
+ * The default list adapter for list dialogs, containing plain textual list items.
+ *
+ * @author Aidan Follestad (afollestad)
+ */
+internal class MDListAdapter(
+  private var dialog: MaterialDialog,
+  internal var items: Array<String>,
+  private var waitForActionButton: Boolean,
+  internal var selection: ItemListener
+) : RecyclerView.Adapter<MDListViewHolder>(), DialogAdapter<String, ItemListener> {
+
+  override fun onCreateViewHolder(
+    parent: ViewGroup,
+    viewType: Int
+  ): MDListViewHolder {
+    val listItemView: View = parent.inflate(dialog.windowContext, R.layout.md_listitem)
+    return MDListViewHolder(
+        itemView = listItemView,
+        adapter = this,
+        dialog = dialog,
+        waitForActionButton = waitForActionButton
+    )
+  }
+
+  override fun getItemCount(): Int {
+    return items.size
+  }
+
+  override fun onBindViewHolder(
+    holder: MDListViewHolder,
+    position: Int
+  ) {
+    val titleValue = items[position]
+    holder.titleView.text = titleValue
+    holder.itemView.background = dialog.getItemSelector()
+
+    val activatedIndex = dialog.config[KEY_ACTIVATED_INDEX] as? Int
+    holder.itemView.isActivated = activatedIndex != null && activatedIndex == position
+  }
+
+  override fun positiveButtonClicked() {
+    val activatedIndex = dialog.config[KEY_ACTIVATED_INDEX] as? Int
+    if (activatedIndex != null) {
+      selection?.invoke(dialog, activatedIndex, items[activatedIndex])
+      dialog.config.remove(KEY_ACTIVATED_INDEX)
+    }
+  }
+
+  override fun replaceItems(
+    items: Array<String>,
+    listener: ItemListener
+  ) {
+    this.items = items
+    this.selection = listener
+    this.notifyDataSetChanged()
+  }
+}

@@ -27,12 +27,9 @@ import com.afollestad.materialdialogs.list.listItemsMultiChoice
 import com.afollestad.materialdialogs.list.listItemsSingleChoice
 import kotlinx.android.synthetic.main.activity_main.basic
 import kotlinx.android.synthetic.main.activity_main.basic_buttons
-import kotlinx.android.synthetic.main.activity_main.basic_checkbox_buttons
 import kotlinx.android.synthetic.main.activity_main.basic_checkbox_titled_buttons
 import kotlinx.android.synthetic.main.activity_main.basic_icon
 import kotlinx.android.synthetic.main.activity_main.basic_long
-import kotlinx.android.synthetic.main.activity_main.basic_long_buttons
-import kotlinx.android.synthetic.main.activity_main.basic_long_titled
 import kotlinx.android.synthetic.main.activity_main.basic_long_titled_buttons
 import kotlinx.android.synthetic.main.activity_main.basic_titled
 import kotlinx.android.synthetic.main.activity_main.basic_titled_buttons
@@ -66,8 +63,6 @@ import kotlinx.android.synthetic.main.activity_main.misc_dialog_callbacks
 import kotlinx.android.synthetic.main.activity_main.multiple_choice
 import kotlinx.android.synthetic.main.activity_main.multiple_choice_buttons
 import kotlinx.android.synthetic.main.activity_main.multiple_choice_long_items
-import kotlinx.android.synthetic.main.activity_main.single_choice
-import kotlinx.android.synthetic.main.activity_main.single_choice_buttons
 import kotlinx.android.synthetic.main.activity_main.single_choice_buttons_titled
 import kotlinx.android.synthetic.main.activity_main.single_choice_long_items
 import kotlinx.android.synthetic.main.activity_main.single_choice_titled
@@ -139,23 +134,6 @@ class MainActivity : AppCompatActivity() {
       }
     }
 
-    basic_long_titled.setOnClickListener {
-      MaterialDialog(this).show {
-        title(R.string.useGoogleLocationServices)
-        message(R.string.loremIpsum)
-        debugMode(debugMode)
-      }
-    }
-
-    basic_long_buttons.setOnClickListener {
-      MaterialDialog(this).show {
-        message(R.string.loremIpsum)
-        positiveButton(R.string.agree)
-        negativeButton(R.string.disagree)
-        debugMode(debugMode)
-      }
-    }
-
     basic_long_titled_buttons.setOnClickListener {
       MaterialDialog(this).show {
         title(R.string.useGoogleLocationServices)
@@ -170,21 +148,9 @@ class MainActivity : AppCompatActivity() {
       MaterialDialog(this).show {
         title(R.string.useGoogleLocationServices)
         icon(iconRes = R.mipmap.ic_launcher)
-        message(R.string.loremIpsum)
+        message(R.string.useGoogleLocationServicesPrompt)
         positiveButton(R.string.agree)
         negativeButton(R.string.disagree)
-        debugMode(debugMode)
-      }
-    }
-
-    basic_checkbox_buttons.setOnClickListener {
-      MaterialDialog(this).show {
-        message(R.string.loremIpsum)
-        positiveButton(R.string.agree)
-        negativeButton(R.string.disagree)
-        checkBoxPrompt(R.string.checkboxConfirm) { checked ->
-          toast("Checked? $checked")
-        }
         debugMode(debugMode)
       }
     }
@@ -205,7 +171,7 @@ class MainActivity : AppCompatActivity() {
     list.setOnClickListener {
       MaterialDialog(this).show {
         listItems(R.array.socialNetworks) { _, index, text ->
-          toast("Clicked item $text at index $index")
+          toast("Selected item $text at index $index")
         }
         debugMode(debugMode)
       }
@@ -213,7 +179,9 @@ class MainActivity : AppCompatActivity() {
 
     list_buttons.setOnClickListener {
       MaterialDialog(this).show {
-        listItems(R.array.socialNetworks)
+        listItems(R.array.socialNetworks) { _, index, text ->
+          toast("Selected item $text at index $index")
+        }
         positiveButton(R.string.agree)
         negativeButton(R.string.disagree)
         debugMode(debugMode)
@@ -223,7 +191,9 @@ class MainActivity : AppCompatActivity() {
     list_titled.setOnClickListener {
       MaterialDialog(this).show {
         title(R.string.socialNetworks)
-        listItems(R.array.socialNetworks)
+        listItems(R.array.socialNetworks) { _, index, text ->
+          toast("Selected item $text at index $index")
+        }
         debugMode(debugMode)
       }
     }
@@ -231,7 +201,9 @@ class MainActivity : AppCompatActivity() {
     list_titled_buttons.setOnClickListener {
       MaterialDialog(this).show {
         title(R.string.socialNetworks)
-        listItems(R.array.socialNetworks)
+        listItems(R.array.socialNetworks) { _, index, text ->
+          toast("Selected item $text at index $index")
+        }
         positiveButton(R.string.agree)
         negativeButton(R.string.disagree)
         debugMode(debugMode)
@@ -240,14 +212,18 @@ class MainActivity : AppCompatActivity() {
 
     list_long.setOnClickListener {
       MaterialDialog(this).show {
-        listItems(R.array.states)
+        listItems(R.array.states) { _, index, text ->
+          toast("Selected item $text at index $index")
+        }
         debugMode(debugMode)
       }
     }
 
     list_long_buttons.setOnClickListener {
       MaterialDialog(this).show {
-        listItems(R.array.states)
+        listItems(R.array.states) { _, index, text ->
+          toast("Selected item $text at index $index")
+        }
         positiveButton(R.string.agree)
         negativeButton(R.string.disagree)
         debugMode(debugMode)
@@ -257,7 +233,9 @@ class MainActivity : AppCompatActivity() {
     list_long_titled.setOnClickListener {
       MaterialDialog(this).show {
         title(R.string.states)
-        listItems(R.array.states)
+        listItems(R.array.states) { _, index, text ->
+          toast("Selected item $text at index $index")
+        }
         debugMode(debugMode)
       }
     }
@@ -265,7 +243,9 @@ class MainActivity : AppCompatActivity() {
     list_long_titled_buttons.setOnClickListener {
       MaterialDialog(this).show {
         title(R.string.states)
-        listItems(R.array.states)
+        listItems(R.array.states) { _, index, text ->
+          toast("Selected item $text at index $index")
+        }
         positiveButton(R.string.agree)
         negativeButton(R.string.disagree)
         debugMode(debugMode)
@@ -274,14 +254,18 @@ class MainActivity : AppCompatActivity() {
 
     list_long_items.setOnClickListener {
       MaterialDialog(this).show {
-        listItems(R.array.socialNetworks_longItems)
+        listItems(R.array.socialNetworks_longItems) { _, index, text ->
+          toast("Selected item $text at index $index")
+        }
         debugMode(debugMode)
       }
     }
 
     list_long_items_buttons.setOnClickListener {
       MaterialDialog(this).show {
-        listItems(R.array.socialNetworks_longItems)
+        listItems(R.array.socialNetworks_longItems) { _, index, text ->
+          toast("Selected item $text at index $index")
+        }
         positiveButton(R.string.agree)
         negativeButton(R.string.disagree)
         debugMode(debugMode)
@@ -291,7 +275,9 @@ class MainActivity : AppCompatActivity() {
     list_long_items_titled.setOnClickListener {
       MaterialDialog(this).show {
         title(R.string.socialNetworks)
-        listItems(R.array.socialNetworks_longItems)
+        listItems(R.array.socialNetworks_longItems) { _, index, text ->
+          toast("Selected item $text at index $index")
+        }
         debugMode(debugMode)
       }
     }
@@ -299,7 +285,9 @@ class MainActivity : AppCompatActivity() {
     list_long_items_titled_buttons.setOnClickListener {
       MaterialDialog(this).show {
         title(R.string.socialNetworks)
-        listItems(R.array.socialNetworks_longItems)
+        listItems(R.array.socialNetworks_longItems) { _, index, text ->
+          toast("Selected item $text at index $index")
+        }
         positiveButton(R.string.agree)
         negativeButton(R.string.disagree)
         debugMode(debugMode)
@@ -309,7 +297,9 @@ class MainActivity : AppCompatActivity() {
     list_checkPrompt.setOnClickListener {
       MaterialDialog(this).show {
         title(R.string.socialNetworks)
-        listItems(R.array.socialNetworks_longItems)
+        listItems(R.array.socialNetworks_longItems) { _, index, text ->
+          toast("Selected item $text at index $index")
+        }
         checkBoxPrompt(R.string.checkboxConfirm) { checked ->
           toast("Checked? $checked")
         }
@@ -320,7 +310,9 @@ class MainActivity : AppCompatActivity() {
     list_checkPrompt_buttons.setOnClickListener {
       MaterialDialog(this).show {
         title(R.string.socialNetworks)
-        listItems(R.array.socialNetworks_longItems)
+        listItems(R.array.socialNetworks_longItems) { _, index, text ->
+          toast("Selected item $text at index $index")
+        }
         positiveButton(R.string.agree)
         negativeButton(R.string.disagree)
         checkBoxPrompt(R.string.checkboxConfirm) { checked ->
@@ -330,25 +322,12 @@ class MainActivity : AppCompatActivity() {
       }
     }
 
-    single_choice.setOnClickListener {
-      MaterialDialog(this).show {
-        listItemsSingleChoice(R.array.socialNetworks, initialSelection = 1)
-        debugMode(debugMode)
-      }
-    }
-
     single_choice_titled.setOnClickListener {
       MaterialDialog(this).show {
         title(R.string.socialNetworks)
-        listItemsSingleChoice(R.array.socialNetworks, initialSelection = 1)
-        debugMode(debugMode)
-      }
-    }
-
-    single_choice_buttons.setOnClickListener {
-      MaterialDialog(this).show {
-        listItemsSingleChoice(R.array.socialNetworks, initialSelection = 2)
-        positiveButton(R.string.choose)
+        listItemsSingleChoice(R.array.socialNetworks, initialSelection = 1) { _, index, text ->
+          toast("Selected item $text at index $index")
+        }
         debugMode(debugMode)
       }
     }
@@ -356,7 +335,9 @@ class MainActivity : AppCompatActivity() {
     single_choice_buttons_titled.setOnClickListener {
       MaterialDialog(this).show {
         title(R.string.socialNetworks)
-        listItemsSingleChoice(R.array.socialNetworks, initialSelection = 2)
+        listItemsSingleChoice(R.array.socialNetworks, initialSelection = 2) { _, index, text ->
+          toast("Selected item $text at index $index")
+        }
         positiveButton(R.string.choose)
         debugMode(debugMode)
       }
@@ -365,7 +346,9 @@ class MainActivity : AppCompatActivity() {
     single_choice_long_items.setOnClickListener {
       MaterialDialog(this).show {
         title(R.string.socialNetworks)
-        listItemsSingleChoice(R.array.socialNetworks_longItems)
+        listItemsSingleChoice(R.array.socialNetworks_longItems) { _, index, text ->
+          toast("Selected item $text at index $index")
+        }
         positiveButton(R.string.choose)
         debugMode(debugMode)
       }
@@ -374,7 +357,11 @@ class MainActivity : AppCompatActivity() {
     multiple_choice.setOnClickListener {
       MaterialDialog(this).show {
         title(R.string.socialNetworks)
-        listItemsMultiChoice(R.array.socialNetworks, initialSelection = arrayOf(1, 3))
+        listItemsMultiChoice(
+            R.array.socialNetworks, initialSelection = arrayOf(1, 3)
+        ) { _, indices, text ->
+          toast("Selected items ${text.joinToString()} at indices ${indices.joinToString()}")
+        }
         debugMode(debugMode)
       }
     }
@@ -382,7 +369,11 @@ class MainActivity : AppCompatActivity() {
     multiple_choice_buttons.setOnClickListener {
       MaterialDialog(this).show {
         title(R.string.socialNetworks)
-        listItemsMultiChoice(R.array.socialNetworks, initialSelection = arrayOf(1, 3))
+        listItemsMultiChoice(
+            R.array.socialNetworks, initialSelection = arrayOf(1, 3)
+        ) { _, indices, text ->
+          toast("Selected items ${text.joinToString()} at indices ${indices.joinToString()}")
+        }
         positiveButton(R.string.choose)
         debugMode(debugMode)
       }
@@ -391,7 +382,11 @@ class MainActivity : AppCompatActivity() {
     multiple_choice_long_items.setOnClickListener {
       MaterialDialog(this).show {
         title(R.string.socialNetworks)
-        listItemsMultiChoice(R.array.socialNetworks_longItems)
+        listItemsMultiChoice(
+            R.array.socialNetworks_longItems, initialSelection = arrayOf(1, 3)
+        ) { _, indices, text ->
+          toast("Selected items ${text.joinToString()} at indices ${indices.joinToString()}")
+        }
         positiveButton(R.string.choose)
         debugMode(debugMode)
       }

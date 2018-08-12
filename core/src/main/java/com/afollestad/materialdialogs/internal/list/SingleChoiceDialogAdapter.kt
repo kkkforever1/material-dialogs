@@ -9,6 +9,7 @@ package com.afollestad.materialdialogs.internal.list
 import android.support.v7.widget.AppCompatRadioButton
 import android.support.v7.widget.RecyclerView
 import android.view.View
+import android.view.View.OnClickListener
 import android.view.ViewGroup
 import android.widget.TextView
 import com.afollestad.materialdialogs.MaterialDialog
@@ -22,25 +23,31 @@ import com.afollestad.materialdialogs.utilext.inflate
 /** @author Aidan Follestad (afollestad) */
 internal class MDSingleChoiceViewHolder(
   itemView: View,
-  adapter: MDSingleChoiceAdapter,
-  dialog: MaterialDialog
-) : RecyclerView.ViewHolder(itemView) {
+  private val adapter: MDSingleChoiceAdapter,
+  private val dialog: MaterialDialog,
+  private val waitForActionButton: Boolean
+) : RecyclerView.ViewHolder(itemView), OnClickListener {
+
   init {
-    itemView.setOnClickListener {
-      val canSelect =
-        adapter.selectionChanged?.invoke(dialog, adapterPosition, adapter.items[adapterPosition])
-            ?: true
-      if (canSelect) {
-        adapter.currentSelection = adapterPosition
-      }
-      if (canSelect && dialog.autoDismiss() && !dialog.hasActionButtons()) {
-        dialog.dismiss()
-      }
-    }
+    itemView.setOnClickListener(this)
   }
 
   val controlView: AppCompatRadioButton = itemView.findViewById(R.id.md_control)
   val titleView: TextView = itemView.findViewById(R.id.md_title)
+
+  override fun onClick(view: View) {
+    adapter.currentSelection = adapterPosition
+    if (waitForActionButton && dialog.hasActionButtons()) {
+      // Wait for action button, don't call listener
+      // so that positive action button press can do so later.
+    } else {
+      // Don't wait for action button, call listener and dismiss if auto dismiss is applicable
+      adapter.selection?.invoke(dialog, adapterPosition, adapter.items[adapterPosition])
+      if (dialog.autoDismiss() && !dialog.hasActionButtons()) {
+        dialog.dismiss()
+      }
+    }
+  }
 }
 
 /**
@@ -52,8 +59,9 @@ internal class MDSingleChoiceAdapter(
   private var dialog: MaterialDialog,
   internal var items: Array<String>,
   initialSelection: Int,
-  internal var selectionChanged: SingleChoiceListener
-) : RecyclerView.Adapter<MDSingleChoiceViewHolder>() {
+  private val waitForActionButton: Boolean,
+  internal var selection: SingleChoiceListener
+) : RecyclerView.Adapter<MDSingleChoiceViewHolder>(), DialogAdapter<String, SingleChoiceListener> {
 
   var currentSelection: Int = initialSelection
     set(value) {
@@ -67,9 +75,12 @@ internal class MDSingleChoiceAdapter(
     parent: ViewGroup,
     viewType: Int
   ): MDSingleChoiceViewHolder {
-    val listItemView: View = parent.inflate(dialog.appContext, R.layout.md_listitem_singlechoice)
+    val listItemView: View = parent.inflate(dialog.windowContext, R.layout.md_listitem_singlechoice)
     return MDSingleChoiceViewHolder(
-        listItemView, this, dialog
+        itemView = listItemView,
+        adapter = this,
+        dialog = dialog,
+        waitForActionButton = waitForActionButton
     )
   }
 
@@ -84,5 +95,20 @@ internal class MDSingleChoiceAdapter(
     holder.controlView.isChecked = currentSelection == position
     holder.titleView.text = items[position]
     holder.itemView.background = dialog.getItemSelector()
+  }
+
+  override fun positiveButtonClicked() {
+    if (currentSelection > -1) {
+      selection?.invoke(dialog, currentSelection, items[currentSelection])
+    }
+  }
+
+  override fun replaceItems(
+    items: Array<String>,
+    listener: SingleChoiceListener
+  ) {
+    this.items = items
+    this.selection = listener
+    this.notifyDataSetChanged()
   }
 }
