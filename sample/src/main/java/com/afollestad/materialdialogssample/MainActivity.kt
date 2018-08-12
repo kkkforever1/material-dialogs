@@ -4,9 +4,7 @@ package com.afollestad.materialdialogssample
 
 import android.Manifest.permission.READ_EXTERNAL_STORAGE
 import android.content.SharedPreferences
-import android.content.pm.PackageManager.PERMISSION_GRANTED
 import android.os.Bundle
-import android.support.v4.app.ActivityCompat
 import android.support.v7.app.AppCompatActivity
 import android.text.InputType
 import android.text.method.PasswordTransformationMethod
@@ -40,7 +38,11 @@ import kotlinx.android.synthetic.main.activity_main.buttons_stacked_checkboxProm
 import kotlinx.android.synthetic.main.activity_main.custom_view
 import kotlinx.android.synthetic.main.activity_main.custom_view_webview
 import kotlinx.android.synthetic.main.activity_main.file_chooser
+import kotlinx.android.synthetic.main.activity_main.file_chooser_buttons
+import kotlinx.android.synthetic.main.activity_main.file_chooser_filter
 import kotlinx.android.synthetic.main.activity_main.folder_chooser
+import kotlinx.android.synthetic.main.activity_main.folder_chooser_buttons
+import kotlinx.android.synthetic.main.activity_main.folder_chooser_filter
 import kotlinx.android.synthetic.main.activity_main.input
 import kotlinx.android.synthetic.main.activity_main.input_check_prompt
 import kotlinx.android.synthetic.main.activity_main.input_counter
@@ -74,13 +76,11 @@ class MainActivity : AppCompatActivity() {
     const val KEY_PREFS = "prefs"
     const val KEY_DARK_THEME = "dark_theme"
     const val KEY_DEBUG_MODE = "debug_mode"
-    const val FILE_REQUEST_CODE = 69
-    const val FOLDER_REQUEST_CODE = 69
   }
 
   private var debugMode = false
-  private var postPermissionRunnable: Runnable? = null
   private lateinit var prefs: SharedPreferences
+  private val permission = Permission(this)
 
   override fun onCreate(savedInstanceState: Bundle?) {
     prefs = getSharedPreferences(KEY_PREFS, MODE_PRIVATE)
@@ -88,8 +88,7 @@ class MainActivity : AppCompatActivity() {
         if (prefs.boolean(KEY_DARK_THEME)) R.style.AppTheme_Dark else R.style.AppTheme
     )
     debugMode = prefs.boolean(KEY_DEBUG_MODE, false)
-
-
+    
     super.onCreate(savedInstanceState)
     setContentView(R.layout.activity_main)
 
@@ -528,41 +527,17 @@ class MainActivity : AppCompatActivity() {
 
     custom_view_webview.setOnClickListener { showWebViewDialog() }
 
-    file_chooser.setOnClickListener {
-      if (!hasPermission(READ_EXTERNAL_STORAGE)) {
-        postPermissionRunnable = Runnable { file_chooser.performClick() }
-        ActivityCompat.requestPermissions(
-            this@MainActivity, arrayOf(READ_EXTERNAL_STORAGE), FILE_REQUEST_CODE
-        )
-        return@setOnClickListener
-      }
+    file_chooser.setOnClickListener { showFileChooser() }
 
-      MaterialDialog(this).show {
-        fileChooser { file ->
-          toast("Selected file: ${file.absolutePath}")
-        }
-        negativeButton(android.R.string.cancel)
-        debugMode(debugMode)
-      }
-    }
+    file_chooser_buttons.setOnClickListener { showFileChooserButtons() }
 
-    folder_chooser.setOnClickListener {
-      if (!hasPermission(READ_EXTERNAL_STORAGE)) {
-        postPermissionRunnable = Runnable { folder_chooser.performClick() }
-        ActivityCompat.requestPermissions(
-            this@MainActivity, arrayOf(READ_EXTERNAL_STORAGE), FOLDER_REQUEST_CODE
-        )
-        return@setOnClickListener
-      }
+    file_chooser_filter.setOnClickListener { showFileChooserFilter() }
 
-      MaterialDialog(this).show {
-        folderChooser { folder ->
-          toast("Selected folder: ${folder.absolutePath}")
-        }
-        negativeButton(android.R.string.cancel)
-        debugMode(debugMode)
-      }
-    }
+    folder_chooser.setOnClickListener { showFolderChooser() }
+
+    folder_chooser_buttons.setOnClickListener { showFolderChooserButtons() }
+
+    folder_chooser_filter.setOnClickListener { showFolderChooserFilter() }
   }
 
   private fun showCustomViewDialog() {
@@ -570,15 +545,19 @@ class MainActivity : AppCompatActivity() {
       title(R.string.googleWifi)
       customView(R.layout.custom_view, scrollable = true)
       positiveButton(R.string.connect) { dialog ->
-        val passwordInput = dialog.getCustomView()!!.findViewById<EditText>(R.id.password)
+        // Pull the password out of the custom view when the positive button is pressed
+        val customView = dialog.getCustomView()!!
+        val passwordInput: EditText = customView.findViewById(R.id.password)
         toast("Password: $passwordInput")
       }
       negativeButton(android.R.string.cancel)
       debugMode(debugMode)
     }
 
-    val passwordInput = dialog.getCustomView()!!.findViewById<EditText>(R.id.password)
-    val showPasswordCheck = dialog.getCustomView()!!.findViewById<CheckBox>(R.id.showPassword)
+    // Setup custom view content
+    val customView = dialog.getCustomView()!!
+    val passwordInput: EditText = customView.findViewById(R.id.password)
+    val showPasswordCheck: CheckBox = customView.findViewById(R.id.showPassword)
     showPasswordCheck.setOnCheckedChangeListener { _, isChecked ->
       passwordInput.inputType =
           if (!isChecked) InputType.TYPE_TEXT_VARIATION_PASSWORD else InputType.TYPE_CLASS_TEXT
@@ -595,7 +574,8 @@ class MainActivity : AppCompatActivity() {
       debugMode(debugMode)
     }
 
-    val webView = dialog.getCustomView()!!.findViewById<WebView>(R.id.web_view)
+    val customView = dialog.getCustomView()!!
+    val webView: WebView = customView.findViewById(R.id.web_view)
     webView.loadData(
         "<h3>WebView Custom View</h3>\n" +
             "\n" +
@@ -615,7 +595,106 @@ class MainActivity : AppCompatActivity() {
         "text/html",
         "UTF-8"
     )
+  }
 
+  private fun showFileChooser() {
+    permission.request(arrayOf(READ_EXTERNAL_STORAGE)) { result ->
+      if (!result.allGranted()) {
+        toast("Storage permission is needed for file choosers")
+        return@request
+      }
+
+      MaterialDialog(this).show {
+        fileChooser { file ->
+          toast("Selected file: ${file.absolutePath}")
+        }
+        debugMode(debugMode)
+      }
+    }
+  }
+
+  private fun showFileChooserButtons() {
+    permission.request(arrayOf(READ_EXTERNAL_STORAGE)) { result ->
+      if (!result.allGranted()) {
+        toast("Storage permission is needed for file choosers")
+        return@request
+      }
+
+      MaterialDialog(this).show {
+        fileChooser { file ->
+          toast("Selected file: ${file.absolutePath}")
+        }
+        negativeButton(android.R.string.cancel)
+        positiveButton(R.string.select)
+        debugMode(debugMode)
+      }
+    }
+  }
+
+  private fun showFileChooserFilter() {
+    permission.request(arrayOf(READ_EXTERNAL_STORAGE)) { result ->
+      if (!result.allGranted()) {
+        toast("Storage permission is needed for file choosers")
+        return@request
+      }
+
+      MaterialDialog(this).show {
+        fileChooser(filter = { it.extension == "txt" }) { file ->
+          toast("Selected file: ${file.absolutePath}")
+        }
+        debugMode(debugMode)
+      }
+    }
+  }
+
+  private fun showFolderChooser() {
+    permission.request(arrayOf(READ_EXTERNAL_STORAGE)) { result ->
+      if (!result.allGranted()) {
+        toast("Storage permission is needed for file choosers")
+        return@request
+      }
+
+      MaterialDialog(this).show {
+        folderChooser { folder ->
+          toast("Selected folder: ${folder.absolutePath}")
+        }
+        debugMode(debugMode)
+      }
+    }
+  }
+
+  private fun showFolderChooserButtons() {
+    permission.request(arrayOf(READ_EXTERNAL_STORAGE)) { result ->
+      if (!result.allGranted()) {
+        toast("Storage permission is needed for file choosers")
+        return@request
+      }
+
+      MaterialDialog(this).show {
+        folderChooser { folder ->
+          toast("Selected folder: ${folder.absolutePath}")
+        }
+        negativeButton(android.R.string.cancel)
+        positiveButton(R.string.select)
+        debugMode(debugMode)
+      }
+    }
+  }
+
+  private fun showFolderChooserFilter() {
+    permission.request(arrayOf(READ_EXTERNAL_STORAGE)) { result ->
+      if (!result.allGranted()) {
+        toast("Storage permission is needed for file choosers")
+        return@request
+      }
+
+      MaterialDialog(this).show {
+        folderChooser(filter = { it.name.startsWith("a", true) }) { folder ->
+          toast("Selected folder: ${folder.absolutePath}")
+        }
+        debugMode(debugMode)
+      }
+    }
   }
 
   override fun onCreateOptionsMenu(menu: Menu): Boolean {
@@ -655,8 +734,6 @@ class MainActivity : AppCompatActivity() {
     grantResults: IntArray
   ) {
     super.onRequestPermissionsResult(requestCode, permissions, grantResults)
-    if (grantResults.isNotEmpty() && grantResults[0] == PERMISSION_GRANTED) {
-      postPermissionRunnable?.run()
-    }
+    permission.response(requestCode, permissions, grantResults)
   }
 }
