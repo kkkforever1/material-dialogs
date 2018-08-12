@@ -64,12 +64,9 @@ fun MaterialDialog.listItems(
 ): MaterialDialog {
   assertOneSet(arrayRes, array)
   val items = array ?: getStringArray(arrayRes)
-
-  if (this.contentRecyclerView != null &&
-      this.contentRecyclerView!!.adapter != null &&
-      this.contentRecyclerView!!.adapter is PlainListDialogAdapter
-  ) {
-    val adapter = this.contentRecyclerView!!.adapter as PlainListDialogAdapter
+  val adapter = getListAdapter()
+  
+  if (adapter is PlainListDialogAdapter) {
     adapter.replaceItems(items, selection)
     return this
   }
@@ -102,12 +99,9 @@ fun MaterialDialog.listItemsSingleChoice(
 ): MaterialDialog {
   assertOneSet(arrayRes, array)
   val items = array ?: getStringArray(arrayRes)
+  val adapter = getListAdapter()
 
-  if (this.contentRecyclerView != null &&
-      this.contentRecyclerView!!.adapter != null &&
-      this.contentRecyclerView!!.adapter is SingleChoiceDialogAdapter
-  ) {
-    val adapter = this.contentRecyclerView!!.adapter as SingleChoiceDialogAdapter
+  if (adapter is SingleChoiceDialogAdapter) {
     adapter.replaceItems(items, selection)
     return this
   }
@@ -141,12 +135,9 @@ fun MaterialDialog.listItemsMultiChoice(
 ): MaterialDialog {
   assertOneSet(arrayRes, array)
   val items = array ?: getStringArray(arrayRes)
+  val adapter = getListAdapter()
 
-  if (this.contentRecyclerView != null &&
-      this.contentRecyclerView!!.adapter != null &&
-      this.contentRecyclerView!!.adapter is MultiChoiceDialogAdapter
-  ) {
-    val adapter = this.contentRecyclerView!!.adapter as MultiChoiceDialogAdapter
+  if (adapter is MultiChoiceDialogAdapter) {
     adapter.replaceItems(items, selection)
     return this
   }
