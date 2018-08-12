@@ -21,10 +21,16 @@ fun MaterialDialog.getCheckBoxPrompt(): CheckBox {
   return view.buttonsLayout.checkBoxPrompt
 }
 
+/**
+ * @param textRes The string resource to display for the checkbox label.
+ * @param text The literal string to display for the checkbox label.
+ * @param isCheckedDefault Whether or not the checkbox is initially checked.
+ * @param onToggle A listener invoked when the checkbox is checked or unchecked.
+ */
 @CheckResult
 fun MaterialDialog.checkBoxPrompt(
   @StringRes textRes: Int = 0,
-  text: CharSequence? = null,
+  text: String? = null,
   isCheckedDefault: Boolean = false,
   onToggle: ((Boolean) -> Unit)?
 ): MaterialDialog {

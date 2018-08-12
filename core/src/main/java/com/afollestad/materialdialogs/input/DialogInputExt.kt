@@ -23,6 +23,8 @@ import com.afollestad.materialdialogs.utilext.textChanged
 
 typealias InputCallback = ((MaterialDialog, CharSequence) -> Unit)?
 
+internal const val KEY_INPUT_CALLBACK = "input_callback"
+
 @CheckResult
 fun MaterialDialog.getInputLayout(): TextInputLayout? {
   return this.textInputLayout
@@ -33,17 +35,37 @@ fun MaterialDialog.getInputField(): EditText? {
   return this.textInputLayout?.editText
 }
 
+/**
+ * Shows an input field as the content of the dialog. Can be used with a message and checkbox
+ * prompt, but cannot be used with a list.
+ *
+ * @param hint The literal string to display as the input field hint.
+ * @param hintRes The string resource to display as the input field hint.
+ * @param prefill The literal string to pre-fill the input field with.
+ * @param prefillRes The string resource to pre-fill the input field with.
+ * @param inputType The input type for the input field, e.g. phone or email. Defaults to plain text.
+ * @param maxLength The max length for the input field, shows a counter and disables the positive
+ *    action button if the input length surpasses it.
+ * @param waitForPositiveButton When true, the [callback] isn't invoked until the positive button
+ *    is clicked. Otherwise, it's invoked every time the input text changes.
+ * @param callback A listener to invoke for input text notifications.
+ */
 @CheckResult
 fun MaterialDialog.input(
-  hint: CharSequence? = null,
+  hint: String? = null,
   @StringRes hintRes: Int? = null,
   prefill: CharSequence? = null,
   @StringRes prefillRes: Int? = null,
   inputType: Int = InputType.TYPE_CLASS_TEXT,
   maxLength: Int? = null,
+  waitForPositiveButton: Boolean = true,
   callback: InputCallback = null
 ): MaterialDialog {
   addInputField()
+  if (callback != null && waitForPositiveButton) {
+    config[KEY_INPUT_CALLBACK] = callback
+  }
+
   val editText = this.textInputLayout!!.editText!!
   editText.setText(prefill ?: getString(prefillRes))
   editText.hint = hint ?: getString(hintRes)
@@ -54,12 +76,13 @@ fun MaterialDialog.input(
     this.textInputLayout!!.counterMaxLength = maxLength
   }
 
-  editText.textChanged {
-    // TODO option to only call on positive button click
-    callback?.invoke(this@input, it)
+  if (!waitForPositiveButton || maxLength != null) {
+    editText.textChanged {
+      callback?.invoke(this@input, it)
+      invalidateInputMaxLength()
+    }
     invalidateInputMaxLength()
   }
-  invalidateInputMaxLength()
 
   return this
 }

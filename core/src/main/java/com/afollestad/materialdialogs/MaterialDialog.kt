@@ -21,6 +21,8 @@ import android.widget.TextView
 import com.afollestad.materialdialogs.WhichButton.NEGATIVE
 import com.afollestad.materialdialogs.WhichButton.NEUTRAL
 import com.afollestad.materialdialogs.WhichButton.POSITIVE
+import com.afollestad.materialdialogs.input.InputCallback
+import com.afollestad.materialdialogs.input.KEY_INPUT_CALLBACK
 import com.afollestad.materialdialogs.internal.button.DialogActionButtonLayout.Companion.INDEX_NEGATIVE
 import com.afollestad.materialdialogs.internal.button.DialogActionButtonLayout.Companion.INDEX_NEUTRAL
 import com.afollestad.materialdialogs.internal.button.DialogActionButtonLayout.Companion.INDEX_POSITIVE
@@ -32,6 +34,7 @@ import com.afollestad.materialdialogs.list.getListAdapter
 import com.afollestad.materialdialogs.utilext.addContentScrollView
 import com.afollestad.materialdialogs.utilext.assertOneSet
 import com.afollestad.materialdialogs.utilext.getString
+import com.afollestad.materialdialogs.utilext.hideKeyboard
 import com.afollestad.materialdialogs.utilext.inflate
 import com.afollestad.materialdialogs.utilext.preShow
 import com.afollestad.materialdialogs.utilext.setActionButtonText
@@ -39,6 +42,7 @@ import com.afollestad.materialdialogs.utilext.setDefaults
 import com.afollestad.materialdialogs.utilext.setIcon
 import com.afollestad.materialdialogs.utilext.setText
 import com.afollestad.materialdialogs.utilext.setWindowConstraints
+import com.afollestad.materialdialogs.utilext.showKeyboardIfApplicable
 
 typealias DialogCallback = (MaterialDialog) -> Unit
 
@@ -50,6 +54,7 @@ class MaterialDialog(
   val windowContext: Context
 ) : Dialog(windowContext, Theme.inferTheme(windowContext).styleRes) {
 
+  /** A named config map, used like tags for extensions. */
   val config: MutableMap<String, Any> = mutableMapOf(CONFIG_AUTO_DISMISS to true)
 
   internal val view: DialogLayout = inflate(context, R.layout.md_dialog_base)
@@ -67,6 +72,12 @@ class MaterialDialog(
     setDefaults()
   }
 
+  /**
+   * Shows an icon to the left of the dialog title.
+   *
+   * @param iconRes The drawable resource to display as the icon.
+   * @param icon The drawbale to display as the icon.
+   */
   @CheckResult
   fun icon(
     @DrawableRes iconRes: Int? = null,
@@ -81,10 +92,16 @@ class MaterialDialog(
     return this
   }
 
+  /**
+   * Shows a title, or header, at the top of the dialog.
+   *
+   * @param textRes The string resource to display as the title.
+   * @param text The literal string to display as the title.
+   */
   @CheckResult
   fun title(
     @StringRes textRes: Int? = null,
-    text: CharSequence? = null
+    text: String? = null
   ): MaterialDialog {
     assertOneSet(textRes, text)
     setText(
@@ -95,6 +112,12 @@ class MaterialDialog(
     return this
   }
 
+  /**
+   * Shows a message, below the title, and above the action buttons (and checkbox prompt).
+   *
+   * @param textRes The string resource to display as the message.
+   * @param text The literal string to display as the message.
+   */
   @CheckResult
   fun message(
     @StringRes textRes: Int? = null,
@@ -105,6 +128,13 @@ class MaterialDialog(
     return this
   }
 
+  /**
+   * Shows a positive action button, in the far right at the bottom of the dialog.
+   *
+   * @param positiveRes The string resource to display on the title.
+   * @param positiveText The literal string to display on the button.
+   * @param click A listener to invoke when the button is pressed.
+   */
   @CheckResult
   fun positiveButton(
     @StringRes positiveRes: Int? = null,
@@ -124,6 +154,14 @@ class MaterialDialog(
     return this
   }
 
+  /**
+   * Shows a  negative action button, to the left of the positive action button (or at the far
+   * right if there is no positive action button).
+   *
+   * @param negativeRes The string resource to display on the title.
+   * @param negativeText The literal string to display on the button.
+   * @param click A listener to invoke when the button is pressed.
+   */
   @CheckResult
   fun negativeButton(
     @StringRes negativeRes: Int? = null,
@@ -166,18 +204,24 @@ class MaterialDialog(
     return this
   }
 
+  /**
+   * Turns off auto dismiss. Action button and list item clicks won't dismiss the dialog on their
+   * own. You have to handle dismissing the dialog manually with the [dismiss] method.
+   */
   @CheckResult
   fun noAutoDismiss(): MaterialDialog {
     this.config[CONFIG_AUTO_DISMISS] = false
     return this
   }
 
+  /** Turns debug mode on or off. Draws spec guides over dialog views. */
   @CheckResult
   fun debugMode(debugMode: Boolean = true): MaterialDialog {
     this.view.debugMode = debugMode
     return this
   }
 
+  /** Enables or disables an action button. */
   fun setActionButtonEnabled(
     which: WhichButton,
     enabled: Boolean
@@ -186,39 +230,56 @@ class MaterialDialog(
     return this
   }
 
+  /** Sets a listener that's invoked when the dialog is [show]'n. */
   @CheckResult
   inline fun onShow(crossinline callback: DialogCallback): MaterialDialog {
     setOnShowListener { callback.invoke(this@MaterialDialog) }
     return this
   }
 
+  /** Sets a listener that's invoked when the dialog is [dismiss]'d. */
   @CheckResult
   inline fun onDismiss(crossinline callback: DialogCallback): MaterialDialog {
     setOnDismissListener { callback.invoke(this@MaterialDialog) }
     return this
   }
 
+  /** Sets a listener that's invoked when the dialog is [cancel]'d. */
   @CheckResult
   inline fun onCancel(crossinline callback: DialogCallback): MaterialDialog {
     setOnCancelListener { callback.invoke(this@MaterialDialog) }
     return this
   }
 
+  /** Opens the dialog. */
   override fun show() {
     preShow()
     super.show()
+    showKeyboardIfApplicable()
   }
 
+  /** Applies multiple properties to the dialog and opens it. */
   inline fun show(func: MaterialDialog.() -> Unit): MaterialDialog {
     this.func()
     this.show()
     return this
   }
 
+  override fun dismiss() {
+    hideKeyboard()
+    super.dismiss()
+  }
+
   private fun buttonClicked(which: WhichButton) {
     if (which == POSITIVE) {
       val adapter = getListAdapter() as? DialogAdapter<*, *>
       adapter?.positiveButtonClicked()
+
+      val inputCallback = config[KEY_INPUT_CALLBACK] as? InputCallback
+      if (inputCallback != null) {
+        inputCallback.invoke(this, textInputLayout!!.editText!!.text)
+        config.remove(KEY_INPUT_CALLBACK)
+      }
     }
   }
 

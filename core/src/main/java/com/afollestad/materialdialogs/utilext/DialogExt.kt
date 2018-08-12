@@ -7,6 +7,7 @@
 package com.afollestad.materialdialogs.utilext
 
 import android.content.Context
+import android.content.Context.INPUT_METHOD_SERVICE
 import android.graphics.Point
 import android.graphics.drawable.Drawable
 import android.graphics.drawable.GradientDrawable
@@ -23,6 +24,8 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.view.WindowManager
+import android.view.inputmethod.InputMethodManager
+import android.view.inputmethod.InputMethodManager.SHOW_IMPLICIT
 import android.widget.ImageView
 import android.widget.TextView
 import com.afollestad.materialdialogs.MaterialDialog
@@ -221,5 +224,29 @@ internal fun MaterialDialog.setActionButtonText(
         click(this@setActionButtonText)
       }
     }
+  }
+}
+
+internal fun MaterialDialog.showKeyboardIfApplicable() {
+  val editText = textInputLayout?.editText ?: return
+  editText.postApply {
+    requestFocus()
+    val imm =
+      windowContext.getSystemService(INPUT_METHOD_SERVICE) as InputMethodManager
+    imm.showSoftInput(editText, SHOW_IMPLICIT)
+  }
+}
+
+internal fun MaterialDialog.hideKeyboard() {
+  val imm =
+    windowContext.getSystemService(INPUT_METHOD_SERVICE) as InputMethodManager
+  val currentFocus = currentFocus
+  val windowToken = if (currentFocus != null) {
+    currentFocus.windowToken
+  } else {
+    view.windowToken
+  }
+  if (windowToken != null) {
+    imm.hideSoftInputFromWindow(windowToken, 0)
   }
 }

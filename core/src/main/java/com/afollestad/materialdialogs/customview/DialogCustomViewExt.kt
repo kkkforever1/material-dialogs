@@ -19,6 +19,14 @@ fun MaterialDialog.getCustomView(): View? {
   return contentCustomView
 }
 
+/**
+ * Sets a custom view to display in the dialog, below the title and above the action buttons
+ * (and checkbox prompt).
+ *
+ * @param viewRes The layout resource to inflate as the custom view.
+ * @param view The view to insert as the custom view.
+ * @param scrollable Whether or not the custom view is automatically wrapped in a ScrollView.
+ */
 @CheckResult
 fun MaterialDialog.customView(
   @LayoutRes viewRes: Int? = null,

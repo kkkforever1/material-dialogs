@@ -464,7 +464,9 @@ class MainActivity : AppCompatActivity() {
         input(
             hint = "Type something",
             inputType = InputType.TYPE_CLASS_TEXT or InputType.TYPE_TEXT_FLAG_CAP_WORDS
-        )
+        ) { _, text ->
+          toast("Input: $text")
+        }
         positiveButton(R.string.agree)
         negativeButton(R.string.disagree)
         debugMode(debugMode)
@@ -479,7 +481,9 @@ class MainActivity : AppCompatActivity() {
             hint = "Type something",
             prefill = "Pre-filled!",
             inputType = InputType.TYPE_CLASS_TEXT or InputType.TYPE_TEXT_FLAG_CAP_WORDS
-        )
+        ) { _, text ->
+          toast("Input: $text")
+        }
         positiveButton(R.string.agree)
         negativeButton(R.string.disagree)
         debugMode(debugMode)
@@ -493,7 +497,9 @@ class MainActivity : AppCompatActivity() {
             hint = "Type something",
             inputType = InputType.TYPE_CLASS_TEXT or InputType.TYPE_TEXT_FLAG_CAP_WORDS,
             maxLength = 8
-        )
+        ) { _, text ->
+          toast("Input: $text")
+        }
         positiveButton(R.string.agree)
         negativeButton(R.string.disagree)
         debugMode(debugMode)
@@ -506,7 +512,9 @@ class MainActivity : AppCompatActivity() {
         input(
             hint = "Type something",
             inputType = InputType.TYPE_CLASS_TEXT or InputType.TYPE_TEXT_FLAG_CAP_WORDS
-        )
+        ) { _, text ->
+          toast("Input: $text")
+        }
         positiveButton(R.string.agree)
         negativeButton(R.string.disagree)
         checkBoxPrompt(R.string.checkboxConfirm) { checked ->

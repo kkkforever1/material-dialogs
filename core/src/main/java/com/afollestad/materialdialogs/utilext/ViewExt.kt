@@ -94,6 +94,10 @@ internal operator fun <T : ViewGroup, R : View> T.get(index: Int): R? {
   return getChildAt(index) as? R
 }
 
+internal inline fun <T : View> T.postApply(crossinline exec: T.() -> Unit) = this.post {
+  this.exec()
+}
+
 //internal fun <T : View> T.isScrollable(): Boolean = when (this) {
 //  is DialogScrollView -> this.isScrollable
 //  is DialogRecyclerView -> this.isScrollable()

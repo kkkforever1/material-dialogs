@@ -22,30 +22,6 @@ import com.afollestad.materialdialogs.utilext.getDrawable
 import com.afollestad.materialdialogs.utilext.getStringArray
 import com.afollestad.materialdialogs.utilext.inflate
 
-private fun MaterialDialog.addContentRecyclerView() {
-  if (this.contentScrollView != null || this.textInputLayout != null) {
-    throw IllegalStateException(
-        "Your dialog has already been setup with a different type " +
-            "(e.g. with a message, input field, etc.)"
-    )
-  }
-  if (this.contentRecyclerView != null) {
-    return
-  }
-  this.contentRecyclerView = inflate(
-      windowContext, R.layout.md_dialog_stub_recyclerview, this.view
-  )
-  this.contentRecyclerView!!.rootView = this.view
-  this.contentRecyclerView!!.layoutManager =
-      LinearLayoutManager(context)
-  this.view.addView(this.contentRecyclerView, 1)
-}
-
-internal fun MaterialDialog.getItemSelector() =
-  getDrawable(
-      context = context, attr = R.attr.md_item_selector
-  )
-
 @CheckResult
 fun MaterialDialog.getRecyclerView(): RecyclerView? {
   return this.contentRecyclerView
@@ -184,4 +160,28 @@ fun MaterialDialog.listItemsMultiChoice(
           selection = selection
       )
   )
+}
+
+internal fun MaterialDialog.getItemSelector() =
+  getDrawable(
+      context = context, attr = R.attr.md_item_selector
+  )
+
+private fun MaterialDialog.addContentRecyclerView() {
+  if (this.contentScrollView != null || this.textInputLayout != null) {
+    throw IllegalStateException(
+        "Your dialog has already been setup with a different type " +
+            "(e.g. with a message, input field, etc.)"
+    )
+  }
+  if (this.contentRecyclerView != null) {
+    return
+  }
+  this.contentRecyclerView = inflate(
+      windowContext, R.layout.md_dialog_stub_recyclerview, this.view
+  )
+  this.contentRecyclerView!!.rootView = this.view
+  this.contentRecyclerView!!.layoutManager =
+      LinearLayoutManager(context)
+  this.view.addView(this.contentRecyclerView, 1)
 }
