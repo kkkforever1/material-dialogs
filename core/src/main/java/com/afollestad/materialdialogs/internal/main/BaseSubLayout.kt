@@ -31,6 +31,7 @@ internal abstract class BaseSubLayout(
     }
 
   init {
+    @Suppress("LeakingThis")
     setWillNotDraw(false)
     dividerPaint.style = STROKE
     dividerPaint.strokeWidth = context.resources.getDimension(R.dimen.md_divider_height)

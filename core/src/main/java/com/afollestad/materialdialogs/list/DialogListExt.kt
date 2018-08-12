@@ -4,6 +4,8 @@
  * Designed an developed by Aidan Follestad (afollestad)
  */
 
+@file:Suppress("unused")
+
 package com.afollestad.materialdialogs.list
 
 import android.support.annotation.ArrayRes
@@ -11,8 +13,7 @@ import android.support.annotation.CheckResult
 import android.support.v7.widget.LinearLayoutManager
 import android.support.v7.widget.RecyclerView
 import com.afollestad.materialdialogs.MaterialDialog
-import com.afollestad.materialdialogs.R.attr
-import com.afollestad.materialdialogs.R.layout
+import com.afollestad.materialdialogs.R
 import com.afollestad.materialdialogs.internal.list.MDListAdapter
 import com.afollestad.materialdialogs.internal.list.MDMultiChoiceAdapter
 import com.afollestad.materialdialogs.internal.list.MDSingleChoiceAdapter
@@ -36,7 +37,7 @@ private fun MaterialDialog.addContentRecyclerView() {
     return
   }
   this.contentRecyclerView = inflate(
-      context, layout.md_dialog_stub_recyclerview, this.view
+      context, R.layout.md_dialog_stub_recyclerview, this.view
   )
   this.contentRecyclerView!!.rootView = this.view
   this.contentRecyclerView!!.layoutManager =
@@ -46,7 +47,7 @@ private fun MaterialDialog.addContentRecyclerView() {
 
 internal fun MaterialDialog.getItemSelector() =
   getDrawable(
-      context = context, attr = attr.md_item_selector
+      context = context, attr = R.attr.md_item_selector
   )
 
 @CheckResult

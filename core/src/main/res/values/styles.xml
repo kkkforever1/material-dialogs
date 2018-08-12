@@ -1,7 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
-<resources>
+<resources xmlns:tools="http://schemas.android.com/tools">
 
-  <style name="MD_Light" parent="Theme.AppCompat.Light.Dialog.Alert">
+  <style name="MD_Light" parent="Theme.AppCompat.Light.Dialog.Alert"
+      tools:ignore="PrivateResource">
     <item name="android:windowMinWidthMajor">@dimen/abc_dialog_min_width_major</item>
     <item name="android:windowMinWidthMinor">@dimen/abc_dialog_min_width_minor</item>
 
@@ -16,7 +17,8 @@
     <item name="md_button_selector">@drawable/md_btn_selector</item>
   </style>
 
-  <style name="MD_Dark" parent="Theme.AppCompat.Dialog.Alert">
+  <style name="MD_Dark" parent="Theme.AppCompat.Dialog.Alert"
+      tools:ignore="PrivateResource">
     <item name="android:windowMinWidthMajor">@dimen/abc_dialog_min_width_major</item>
     <item name="android:windowMinWidthMinor">@dimen/abc_dialog_min_width_minor</item>
 

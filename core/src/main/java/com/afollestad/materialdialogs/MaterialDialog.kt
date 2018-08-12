@@ -4,6 +4,8 @@
  * Designed an developed by Aidan Follestad (afollestad)
  */
 
+@file:Suppress("unused")
+
 package com.afollestad.materialdialogs
 
 import android.app.Dialog
@@ -60,7 +62,7 @@ class MaterialDialog(
   }
 
   @CheckResult
-  fun MaterialDialog.icon(
+  fun icon(
     @DrawableRes iconRes: Int? = null,
     icon: Drawable? = null
   ): MaterialDialog {

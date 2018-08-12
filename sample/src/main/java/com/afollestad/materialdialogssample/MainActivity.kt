@@ -482,7 +482,7 @@ class MainActivity : AppCompatActivity() {
         message(R.string.useGoogleLocationServicesPrompt)
         input(
             hint = "Type something",
-            prefill = "Prefilled!",
+            prefill = "Pre-filled!",
             inputType = InputType.TYPE_CLASS_TEXT or InputType.TYPE_TEXT_FLAG_CAP_WORDS
         )
         positiveButton(R.string.agree)
@@ -592,7 +592,7 @@ class MainActivity : AppCompatActivity() {
       debugMode(debugMode)
     }
 
-    val webView = dialog.getCustomView()!!.findViewById<WebView>(R.id.webview)
+    val webView = dialog.getCustomView()!!.findViewById<WebView>(R.id.web_view)
     webView.loadData(
         "<h3>WebView Custom View</h3>\n" +
             "\n" +

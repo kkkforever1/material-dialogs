@@ -4,6 +4,8 @@
  * Designed an developed by Aidan Follestad (afollestad)
  */
 
+@file:Suppress("unused")
+
 package com.afollestad.materialdialogs.checkbox
 
 import android.support.annotation.CheckResult

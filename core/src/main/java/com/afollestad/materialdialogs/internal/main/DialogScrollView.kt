@@ -24,9 +24,10 @@ internal class DialogScrollView(
   attrs: AttributeSet? = null
 ) : ScrollView(context, attrs) {
 
-  var isScrollable: Boolean = false
-    get() = getChildAt(0).measuredHeight > height
   var rootView: DialogLayout? = null
+
+  private var isScrollable: Boolean = false
+    get() = getChildAt(0).measuredHeight > height
 
   override fun onAttachedToWindow() {
     super.onAttachedToWindow()

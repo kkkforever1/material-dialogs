@@ -49,30 +49,6 @@ internal class DialogRecyclerView(
     invalidateDividers()
   }
 
-  fun isScrollable(): Boolean {
-    if (adapter == null) return false
-    val lm = layoutManager
-    val itemCount = adapter!!.itemCount
-    @Suppress("UNREACHABLE_CODE")
-    return when (lm) {
-      is LinearLayoutManager -> {
-        val diff = lm.findLastVisibleItemPosition() - lm.findFirstVisibleItemPosition()
-        return itemCount > diff
-      }
-      is GridLayoutManager -> {
-        val diff = lm.findLastVisibleItemPosition() - lm.findFirstVisibleItemPosition()
-        return itemCount > diff
-      }
-      else -> {
-        Log.w(
-            "MaterialDialogs",
-            "LayoutManager of type ${lm!!.javaClass.name} is currently unsupported."
-        )
-        return false
-      }
-    }
-  }
-
   private fun isAtTop(): Boolean {
     if (!isScrollable()) {
       return false
@@ -114,5 +90,29 @@ internal class DialogRecyclerView(
       return
     }
     rootView?.invalidateDividers(!isAtTop(), !isAtBottom())
+  }
+
+  private fun isScrollable(): Boolean {
+    if (adapter == null) return false
+    val lm = layoutManager
+    val itemCount = adapter!!.itemCount
+    @Suppress("UNREACHABLE_CODE")
+    return when (lm) {
+      is LinearLayoutManager -> {
+        val diff = lm.findLastVisibleItemPosition() - lm.findFirstVisibleItemPosition()
+        return itemCount > diff
+      }
+      is GridLayoutManager -> {
+        val diff = lm.findLastVisibleItemPosition() - lm.findFirstVisibleItemPosition()
+        return itemCount > diff
+      }
+      else -> {
+        Log.w(
+            "MaterialDialogs",
+            "LayoutManager of type ${lm!!.javaClass.name} is currently unsupported."
+        )
+        return false
+      }
+    }
   }
 }
