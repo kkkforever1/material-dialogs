@@ -28,9 +28,9 @@ import android.view.inputmethod.InputMethodManager
 import android.view.inputmethod.InputMethodManager.SHOW_IMPLICIT
 import android.widget.ImageView
 import android.widget.TextView
+import com.afollestad.materialdialogs.DialogCallback
 import com.afollestad.materialdialogs.MaterialDialog
 import com.afollestad.materialdialogs.R
-import com.afollestad.materialdialogs.autoDismiss
 
 @Suppress("UNCHECKED_CAST")
 internal fun <T> MaterialDialog.inflate(
@@ -195,34 +195,6 @@ internal fun MaterialDialog.setText(
     textView.text = value
   } else {
     textView.visibility = View.GONE
-  }
-}
-
-internal fun MaterialDialog.setActionButtonText(
-  textView: TextView,
-  @StringRes textRes: Int? = null,
-  text: CharSequence? = null,
-  @StringRes fallback: Int = 0,
-  click: ((MaterialDialog) -> (Unit))? = null,
-  allowDismiss: Boolean = true
-) {
-  val value = text ?: getString(textRes, fallback)
-  if (value != null) {
-    (textView.parent as View).visibility = View.VISIBLE
-    textView.visibility = View.VISIBLE
-    textView.text = value
-  } else {
-    textView.visibility = View.GONE
-  }
-  if (value != null && (allowDismiss || click != null)) {
-    textView.setOnClickListener {
-      if (autoDismiss()) {
-        dismiss()
-      }
-      if (click != null) {
-        click(this@setActionButtonText)
-      }
-    }
   }
 }
 

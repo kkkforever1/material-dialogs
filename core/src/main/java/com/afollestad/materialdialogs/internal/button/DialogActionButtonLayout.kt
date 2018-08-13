@@ -11,6 +11,7 @@ import android.graphics.Canvas
 import android.support.v7.widget.AppCompatCheckBox
 import android.util.AttributeSet
 import com.afollestad.materialdialogs.R
+import com.afollestad.materialdialogs.WhichButton
 import com.afollestad.materialdialogs.internal.main.BaseSubLayout
 import com.afollestad.materialdialogs.internal.main.DEBUG_COLOR_BLUE
 import com.afollestad.materialdialogs.internal.main.DEBUG_COLOR_DARK_PINK
@@ -65,6 +66,11 @@ internal class DialogActionButtonLayout(
         findViewById(R.id.md_button_neutral)
     )
     checkBoxPrompt = findViewById(R.id.md_checkbox_prompt)
+
+    for ((i, btn) in actionButtons.withIndex()) {
+      val which = WhichButton.fromIndex(i)
+      btn.setOnClickListener { dialogParent().dialog.onActionButtonClicked(which) }
+    }
   }
 
   override fun onMeasure(

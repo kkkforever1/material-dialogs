@@ -13,6 +13,7 @@ import android.view.View
 import com.afollestad.materialdialogs.R
 import com.afollestad.materialdialogs.Theme
 import com.afollestad.materialdialogs.Theme.LIGHT
+import com.afollestad.materialdialogs.inferTheme
 import com.afollestad.materialdialogs.utilext.dimenPx
 import com.afollestad.materialdialogs.utilext.getColor
 import com.afollestad.materialdialogs.utilext.getDrawable
@@ -46,7 +47,7 @@ internal class DialogActionButton(
     stacked: Boolean
   ) {
     // Text color
-    val theme = Theme.inferTheme(appContext)
+    val theme = inferTheme(appContext)
     enabledColor = getColor(appContext, attr = R.attr.colorAccent)
     val disabledColorRes =
       if (theme == LIGHT) R.color.md_disabled_text_light_theme

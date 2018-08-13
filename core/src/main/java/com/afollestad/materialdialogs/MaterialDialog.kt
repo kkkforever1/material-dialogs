@@ -19,10 +19,7 @@ import android.view.View
 import android.widget.LinearLayout
 import android.widget.TextView
 import com.afollestad.materialdialogs.WhichButton.NEGATIVE
-import com.afollestad.materialdialogs.WhichButton.NEUTRAL
 import com.afollestad.materialdialogs.WhichButton.POSITIVE
-import com.afollestad.materialdialogs.input.InputCallback
-import com.afollestad.materialdialogs.input.KEY_INPUT_CALLBACK
 import com.afollestad.materialdialogs.internal.button.DialogActionButtonLayout.Companion.INDEX_NEGATIVE
 import com.afollestad.materialdialogs.internal.button.DialogActionButtonLayout.Companion.INDEX_NEUTRAL
 import com.afollestad.materialdialogs.internal.button.DialogActionButtonLayout.Companion.INDEX_POSITIVE
@@ -37,7 +34,6 @@ import com.afollestad.materialdialogs.utilext.getString
 import com.afollestad.materialdialogs.utilext.hideKeyboard
 import com.afollestad.materialdialogs.utilext.inflate
 import com.afollestad.materialdialogs.utilext.preShow
-import com.afollestad.materialdialogs.utilext.setActionButtonText
 import com.afollestad.materialdialogs.utilext.setDefaults
 import com.afollestad.materialdialogs.utilext.setIcon
 import com.afollestad.materialdialogs.utilext.setText
@@ -46,16 +42,15 @@ import com.afollestad.materialdialogs.utilext.showKeyboardIfApplicable
 
 typealias DialogCallback = (MaterialDialog) -> Unit
 
-internal const val CONFIG_AUTO_DISMISS = "auto_dismiss"
-internal fun MaterialDialog.autoDismiss() = config[CONFIG_AUTO_DISMISS] as Boolean
-
 /** @author Aidan Follestad (afollestad) */
 class MaterialDialog(
   val windowContext: Context
-) : Dialog(windowContext, Theme.inferTheme(windowContext).styleRes) {
+) : Dialog(windowContext, inferTheme(windowContext).styleRes) {
 
   /** A named config map, used like tags for extensions. */
-  val config: MutableMap<String, Any> = mutableMapOf(CONFIG_AUTO_DISMISS to true)
+  val config: MutableMap<String, Any> = mutableMapOf()
+
+  internal var autoDismiss: Boolean = true
 
   internal val view: DialogLayout = inflate(R.layout.md_dialog_base)
   internal var textViewMessage: TextView? = null
@@ -64,6 +59,10 @@ class MaterialDialog(
   internal var contentScrollViewFrame: LinearLayout? = null
   internal var contentRecyclerView: DialogRecyclerView? = null
   internal var contentCustomView: View? = null
+
+  private val positiveListeners = mutableListOf<DialogCallback>()
+  private val negativeListeners = mutableListOf<DialogCallback>()
+  private val neutralListeners = mutableListOf<DialogCallback>()
 
   init {
     setContentView(view)
@@ -139,17 +138,23 @@ class MaterialDialog(
   fun positiveButton(
     @StringRes positiveRes: Int? = null,
     positiveText: CharSequence? = null,
-    click: ((MaterialDialog) -> (Unit))? = null
+    click: DialogCallback? = null
   ): MaterialDialog {
-    setActionButtonText(
-        view.buttonsLayout.actionButtons[INDEX_POSITIVE],
+    if (click != null) {
+      positiveListeners.add(click)
+    }
+
+    val btn = view.buttonsLayout.actionButtons[INDEX_POSITIVE]
+    if (positiveRes == null && positiveText == null) {
+      // Didn't receive text, so just stop with the added listener.
+      return this
+    }
+
+    setText(
+        btn,
         textRes = positiveRes,
         text = positiveText,
-        fallback = android.R.string.ok,
-        click = {
-          buttonClicked(POSITIVE)
-          click?.invoke(it)
-        }
+        fallback = android.R.string.ok
     )
     return this
   }
@@ -166,17 +171,23 @@ class MaterialDialog(
   fun negativeButton(
     @StringRes negativeRes: Int? = null,
     negativeText: CharSequence? = null,
-    click: ((MaterialDialog) -> (Unit))? = null
+    click: DialogCallback? = null
   ): MaterialDialog {
-    setActionButtonText(
-        view.buttonsLayout.actionButtons[INDEX_NEGATIVE],
+    if (click != null) {
+      negativeListeners.add(click)
+    }
+
+    val btn = view.buttonsLayout.actionButtons[INDEX_NEGATIVE]
+    if (negativeRes == null && negativeText == null) {
+      // Didn't receive text, so just stop with the added listener.
+      return this
+    }
+
+    setText(
+        btn,
         textRes = negativeRes,
         text = negativeText,
-        fallback = android.R.string.cancel,
-        click = {
-          buttonClicked(NEGATIVE)
-          click?.invoke(it)
-        }
+        fallback = android.R.string.cancel
     )
     return this
   }
@@ -189,17 +200,22 @@ class MaterialDialog(
   fun neutralButton(
     @StringRes neutralRes: Int? = null,
     neutralText: CharSequence? = null,
-    click: ((MaterialDialog) -> (Unit))? = null
+    click: DialogCallback? = null
   ): MaterialDialog {
-    assertOneSet(neutralRes, neutralText)
-    setActionButtonText(
-        view.buttonsLayout.actionButtons[INDEX_NEUTRAL],
+    if (click != null) {
+      negativeListeners.add(click)
+    }
+
+    val btn = view.buttonsLayout.actionButtons[INDEX_NEUTRAL]
+    if (neutralRes == null && neutralText == null) {
+      // Didn't receive text, so just stop with the added listener.
+      return this
+    }
+
+    setText(
+        btn,
         textRes = neutralRes,
-        text = neutralText,
-        click = {
-          buttonClicked(NEUTRAL)
-          click?.invoke(it)
-        }
+        text = neutralText
     )
     return this
   }
@@ -210,7 +226,7 @@ class MaterialDialog(
    */
   @CheckResult
   fun noAutoDismiss(): MaterialDialog {
-    this.config[CONFIG_AUTO_DISMISS] = false
+    this.autoDismiss = false
     return this
   }
 
@@ -270,17 +286,18 @@ class MaterialDialog(
     super.dismiss()
   }
 
-  private fun buttonClicked(which: WhichButton) {
-    if (which == POSITIVE) {
-      val adapter = getListAdapter() as? DialogAdapter<*, *>
-      adapter?.positiveButtonClicked()
-
-      @Suppress("UNCHECKED_CAST")
-      val inputCallback = config[KEY_INPUT_CALLBACK] as? InputCallback
-      if (inputCallback != null) {
-        inputCallback.invoke(this, textInputLayout!!.editText!!.text)
-        config.remove(KEY_INPUT_CALLBACK)
+  internal fun onActionButtonClicked(which: WhichButton) {
+    @Suppress("NON_EXHAUSTIVE_WHEN")
+    when (which) {
+      POSITIVE -> {
+        positiveListeners.invokeAll(this)
+        val adapter = getListAdapter() as? DialogAdapter<*, *>
+        adapter?.positiveButtonClicked()
       }
+      NEGATIVE -> negativeListeners.invokeAll(this)
+    }
+    if (autoDismiss) {
+      dismiss()
     }
   }
 
@@ -294,5 +311,11 @@ class MaterialDialog(
     }
     assertOneSet(res, text)
     this.textViewMessage!!.text = text ?: getString(res)
+  }
+}
+
+private fun MutableList<DialogCallback>.invokeAll(dialog: MaterialDialog) {
+  for (callback in this) {
+    callback.invoke(dialog)
   }
 }

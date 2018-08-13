@@ -7,5 +7,14 @@ import com.afollestad.materialdialogs.internal.button.DialogActionButtonLayout.C
 enum class WhichButton(val index: Int) {
   POSITIVE(INDEX_POSITIVE),
   NEGATIVE(INDEX_NEGATIVE),
-  NEUTRAL(INDEX_NEUTRAL)
+  NEUTRAL(INDEX_NEUTRAL);
+
+  companion object {
+    fun fromIndex(index: Int) = when (index) {
+      INDEX_POSITIVE -> POSITIVE
+      INDEX_NEGATIVE -> NEGATIVE
+      INDEX_NEUTRAL -> NEUTRAL
+      else -> throw IndexOutOfBoundsException("$index is not an action button index.")
+    }
+  }
 }

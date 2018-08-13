@@ -3,8 +3,9 @@ package com.afollestad.materialdialogs.utilext
 import android.text.Editable
 import android.text.TextWatcher
 import android.widget.EditText
+import java.lang.Math.abs
 
-typealias TextChangeCallback = (CharSequence) -> Unit
+typealias TextChangeCallback = (text: CharSequence, userChange: Boolean) -> Unit
 
 internal fun EditText.textChanged(callback: TextChangeCallback) {
   this.addTextChangedListener(object : TextWatcher {
@@ -22,6 +23,9 @@ internal fun EditText.textChanged(callback: TextChangeCallback) {
       start: Int,
       before: Int,
       count: Int
-    ) = callback.invoke(s)
+    ) {
+      val userChange = abs(count - before) == 1
+      callback.invoke(s, userChange)
+    }
   })
 }

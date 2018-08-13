@@ -16,10 +16,15 @@ import com.afollestad.materialdialogs.MaterialDialog
 import com.afollestad.materialdialogs.utilext.assertOneSet
 import com.afollestad.materialdialogs.utilext.getString
 
+typealias BooleanCallback = ((Boolean) -> Unit)?
+
 @CheckResult
 fun MaterialDialog.getCheckBoxPrompt(): CheckBox {
   return view.buttonsLayout.checkBoxPrompt
 }
+
+@CheckResult
+fun MaterialDialog.isCheckPromptChecked() = getCheckBoxPrompt().isChecked
 
 /**
  * @param textRes The string resource to display for the checkbox label.
@@ -32,7 +37,7 @@ fun MaterialDialog.checkBoxPrompt(
   @StringRes textRes: Int = 0,
   text: String? = null,
   isCheckedDefault: Boolean = false,
-  onToggle: ((Boolean) -> Unit)?
+  onToggle: BooleanCallback
 ): MaterialDialog {
   assertOneSet(textRes, text)
   view.buttonsLayout.checkBoxPrompt.apply {

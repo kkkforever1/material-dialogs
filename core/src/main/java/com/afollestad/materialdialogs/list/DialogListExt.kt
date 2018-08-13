@@ -65,7 +65,7 @@ fun MaterialDialog.listItems(
   assertOneSet(arrayRes, array)
   val items = array ?: getStringArray(arrayRes)
   val adapter = getListAdapter()
-  
+
   if (adapter is PlainListDialogAdapter) {
     adapter.replaceItems(items, selection)
     return this

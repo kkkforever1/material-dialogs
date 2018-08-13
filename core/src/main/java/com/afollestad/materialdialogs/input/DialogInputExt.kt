@@ -23,8 +23,6 @@ import com.afollestad.materialdialogs.utilext.textChanged
 
 typealias InputCallback = ((MaterialDialog, CharSequence) -> Unit)?
 
-internal const val KEY_INPUT_CALLBACK = "input_callback"
-
 @CheckResult
 fun MaterialDialog.getInputLayout(): TextInputLayout? {
   return this.textInputLayout
@@ -63,7 +61,8 @@ fun MaterialDialog.input(
 ): MaterialDialog {
   addInputField()
   if (callback != null && waitForPositiveButton) {
-    config[KEY_INPUT_CALLBACK] = callback
+    // Add an additional callback to invoke the input listener after the positive AB is pressed
+    positiveButton { callback.invoke(this@input, getInputField()!!.text) }
   }
 
   val editText = this.textInputLayout!!.editText!!
@@ -72,11 +71,14 @@ fun MaterialDialog.input(
   editText.inputType = inputType
 
   if (maxLength != null) {
-    this.textInputLayout!!.isCounterEnabled = true
-    this.textInputLayout!!.counterMaxLength = maxLength
+    this.textInputLayout!!.apply {
+      isCounterEnabled = true
+      counterMaxLength = maxLength
+    }
   }
 
   if (!waitForPositiveButton || maxLength != null) {
+    // Invoke the input listener whenever the text changes, as opposed to with positive AB presses
     editText.textChanged {
       callback?.invoke(this@input, it)
       invalidateInputMaxLength()

@@ -14,7 +14,6 @@ import android.view.ViewGroup
 import android.widget.TextView
 import com.afollestad.materialdialogs.MaterialDialog
 import com.afollestad.materialdialogs.R
-import com.afollestad.materialdialogs.autoDismiss
 import com.afollestad.materialdialogs.list.MultiChoiceListener
 import com.afollestad.materialdialogs.list.getItemSelector
 import com.afollestad.materialdialogs.utilext.hasActionButtons
@@ -51,7 +50,7 @@ internal class MultiChoiceViewHolder(
       // Don't wait for action button, call listener and dismiss if auto dismiss is applicable
       val selectedItems = adapter.items.pullIndices(adapter.currentSelection)
       adapter.selection?.invoke(dialog, adapter.currentSelection, selectedItems)
-      if (dialog.autoDismiss() && !dialog.hasActionButtons()) {
+      if (dialog.autoDismiss && !dialog.hasActionButtons()) {
         dialog.dismiss()
       }
     }
@@ -102,9 +101,7 @@ internal class MultiChoiceDialogAdapter(
     )
   }
 
-  override fun getItemCount(): Int {
-    return items.size
-  }
+  override fun getItemCount() = items.size
 
   override fun onBindViewHolder(
     holder: MultiChoiceViewHolder,

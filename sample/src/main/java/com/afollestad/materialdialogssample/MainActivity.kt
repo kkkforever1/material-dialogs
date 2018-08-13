@@ -4,6 +4,7 @@ package com.afollestad.materialdialogssample
 
 import android.Manifest.permission.READ_EXTERNAL_STORAGE
 import android.content.SharedPreferences
+import android.graphics.Color
 import android.os.Bundle
 import android.support.v7.app.AppCompatActivity
 import android.text.InputType
@@ -15,6 +16,7 @@ import android.widget.CheckBox
 import android.widget.EditText
 import com.afollestad.materialdialogs.MaterialDialog
 import com.afollestad.materialdialogs.checkbox.checkBoxPrompt
+import com.afollestad.materialdialogs.color.colorChooser
 import com.afollestad.materialdialogs.customview.customView
 import com.afollestad.materialdialogs.customview.getCustomView
 import com.afollestad.materialdialogs.file.fileChooser
@@ -35,6 +37,10 @@ import kotlinx.android.synthetic.main.activity_main.buttons_callbacks
 import kotlinx.android.synthetic.main.activity_main.buttons_neutral
 import kotlinx.android.synthetic.main.activity_main.buttons_stacked
 import kotlinx.android.synthetic.main.activity_main.buttons_stacked_checkboxPrompt
+import kotlinx.android.synthetic.main.activity_main.colorChooser_accent
+import kotlinx.android.synthetic.main.activity_main.colorChooser_customColors
+import kotlinx.android.synthetic.main.activity_main.colorChooser_customColorsNoSub
+import kotlinx.android.synthetic.main.activity_main.colorChooser_primary
 import kotlinx.android.synthetic.main.activity_main.custom_view
 import kotlinx.android.synthetic.main.activity_main.custom_view_webview
 import kotlinx.android.synthetic.main.activity_main.file_chooser
@@ -88,7 +94,7 @@ class MainActivity : AppCompatActivity() {
         if (prefs.boolean(KEY_DARK_THEME)) R.style.AppTheme_Dark else R.style.AppTheme
     )
     debugMode = prefs.boolean(KEY_DEBUG_MODE, false)
-    
+
     super.onCreate(savedInstanceState)
     setContentView(R.layout.activity_main)
 
@@ -526,6 +532,63 @@ class MainActivity : AppCompatActivity() {
     custom_view.setOnClickListener { showCustomViewDialog() }
 
     custom_view_webview.setOnClickListener { showWebViewDialog() }
+
+    colorChooser_primary.setOnClickListener {
+      MaterialDialog(this).show {
+        title(R.string.primary_colors)
+        colorChooser(PRIMARY_COLORS, PRIMARY_COLORS_SUB) { _, color ->
+          toast("Selected color: ${color.toHex()}")
+        }
+        positiveButton(R.string.select)
+        negativeButton(android.R.string.cancel)
+        debugMode(debugMode)
+      }
+    }
+
+    colorChooser_accent.setOnClickListener {
+      MaterialDialog(this).show {
+        title(R.string.accent_colors)
+        colorChooser(ACCENT_COLORS, ACCENT_COLORS_SUB) { _, color ->
+          toast("Selected color: ${color.toHex()}")
+        }
+        positiveButton(R.string.select)
+        negativeButton(android.R.string.cancel)
+        debugMode(debugMode)
+      }
+    }
+
+    colorChooser_customColors.setOnClickListener {
+      val topLevel = intArrayOf(Color.RED, Color.YELLOW, Color.BLUE)
+      val subLevel = arrayOf(
+          intArrayOf(Color.LTGRAY, Color.GRAY, Color.DKGRAY),
+          intArrayOf(Color.GREEN, Color.BLACK),
+          intArrayOf(Color.MAGENTA, Color.CYAN)
+      )
+
+      MaterialDialog(this).show {
+        title(R.string.custom_colors)
+        colorChooser(topLevel, subLevel) { _, color ->
+          toast("Selected color: ${color.toHex()}")
+        }
+        positiveButton(R.string.select)
+        negativeButton(android.R.string.cancel)
+        debugMode(debugMode)
+      }
+    }
+
+    colorChooser_customColorsNoSub.setOnClickListener {
+      val topLevel = intArrayOf(Color.RED, Color.YELLOW, Color.BLUE)
+
+      MaterialDialog(this).show {
+        title(R.string.custom_colors)
+        colorChooser(topLevel) { _, color ->
+          toast("Selected color: ${color.toHex()}")
+        }
+        positiveButton(R.string.select)
+        negativeButton(android.R.string.cancel)
+        debugMode(debugMode)
+      }
+    }
 
     file_chooser.setOnClickListener { showFileChooser() }
 

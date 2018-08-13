@@ -1,9 +1,3 @@
-/*
- * Licensed under Apache-2.0
- *
- * Designed an developed by Aidan Follestad (afollestad)
- */
-
 package com.afollestad.materialdialogs.utilext
 
 import android.content.Context
@@ -35,11 +29,14 @@ internal fun Int.isColorDark(): Boolean {
   return darkness >= 0.5
 }
 
-//@ColorInt
-//internal fun Int.adjustAlpha(factor: Float): Int {
-//  val alpha = Math.round(Color.alpha(this) * factor)
-//  val red = Color.red(this)
-//  val green = Color.green(this)
-//  val blue = Color.blue(this)
-//  return Color.argb(alpha, red, green, blue)
-//}
+internal fun Int.toHex() =
+  String.format("%06X", 0xFFFFFF and this)
+
+internal fun String.toColor() = Color.parseColor(
+    if (!this.startsWith("#")) "#$this"
+    else this
+)
+
+internal fun Int.red() = Color.red(this)
+internal fun Int.green() = Color.green(this)
+internal fun Int.blue() = Color.blue(this)
