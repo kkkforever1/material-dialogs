@@ -70,6 +70,9 @@ class MaterialDialog(
   private val positiveListeners = mutableListOf<DialogCallback>()
   private val negativeListeners = mutableListOf<DialogCallback>()
   private val neutralListeners = mutableListOf<DialogCallback>()
+  private val showListeners = mutableListOf<DialogCallback>()
+  private val dismissListeners = mutableListOf<DialogCallback>()
+  private val cancelListeners = mutableListOf<DialogCallback>()
 
   init {
     setContentView(view)
@@ -253,24 +256,45 @@ class MaterialDialog(
     return this
   }
 
-  /** Sets a listener that's invoked when the dialog is [show]'n. */
+  /**
+   * Sets a listener that's invoked when the dialog is [show]'n. If this is called
+   * multiple times, it appends additional callbacks, rather than overwriting.
+   */
   @CheckResult
-  inline fun onShow(crossinline callback: DialogCallback): MaterialDialog {
-    setOnShowListener { callback.invoke(this@MaterialDialog) }
+  fun onShow(callback: DialogCallback): MaterialDialog {
+    this.showListeners.add(callback)
+    if (this.showListeners.isNotEmpty()) {
+      return this
+    }
+    setOnShowListener { this.showListeners.invokeAll(this) }
     return this
   }
 
-  /** Sets a listener that's invoked when the dialog is [dismiss]'d. */
+  /**
+   * Sets a listener that's invoked when the dialog is [dismiss]'d. If this is called
+   * multiple times, it appends additional callbacks, rather than overwriting.
+   */
   @CheckResult
-  inline fun onDismiss(crossinline callback: DialogCallback): MaterialDialog {
-    setOnDismissListener { callback.invoke(this@MaterialDialog) }
+  fun onDismiss(callback: DialogCallback): MaterialDialog {
+    this.dismissListeners.add(callback)
+    if (this.dismissListeners.isNotEmpty()) {
+      return this
+    }
+    setOnDismissListener { dismissListeners.invokeAll(this) }
     return this
   }
 
-  /** Sets a listener that's invoked when the dialog is [cancel]'d. */
+  /**
+   * Sets a listener that's invoked when the dialog is [cancel]'d. If this is called
+   * multiple times, it appends additional callbacks, rather than overwriting.
+   */
   @CheckResult
-  inline fun onCancel(crossinline callback: DialogCallback): MaterialDialog {
-    setOnCancelListener { callback.invoke(this@MaterialDialog) }
+  fun onCancel(callback: DialogCallback): MaterialDialog {
+    this.cancelListeners.add(callback)
+    if (this.cancelListeners.isNotEmpty()) {
+      return this
+    }
+    setOnCancelListener { cancelListeners.invokeAll(this) }
     return this
   }
 
