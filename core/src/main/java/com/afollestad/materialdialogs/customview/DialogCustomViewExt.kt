@@ -10,7 +10,11 @@ import android.support.annotation.CheckResult
 import android.support.annotation.LayoutRes
 import android.view.View
 import com.afollestad.materialdialogs.MaterialDialog
-import com.afollestad.materialdialogs.utilext.addContentScrollView
+import com.afollestad.materialdialogs.R
+import com.afollestad.materialdialogs.shared.dimenPx
+import com.afollestad.materialdialogs.shared.topMargin
+import com.afollestad.materialdialogs.shared.updateMargin
+import com.afollestad.materialdialogs.shared.updatePadding
 import com.afollestad.materialdialogs.utilext.assertOneSet
 import com.afollestad.materialdialogs.utilext.inflate
 
@@ -33,19 +37,24 @@ fun MaterialDialog.customView(
   view: View? = null,
   scrollable: Boolean = false
 ): MaterialDialog {
-  if ((!scrollable && this.contentScrollView != null) ||
-      this.contentRecyclerView != null ||
-      this.textInputLayout != null
-  ) {
+  if (this.contentRecyclerView != null) {
     throw IllegalStateException(
         "This dialog has already been setup with another type " +
             "(e.g. list, message, input, etc.)"
     )
   }
   assertOneSet(viewRes, view)
-  if (scrollable) {
+  if (scrollable || this.contentScrollViewFrame != null) {
     addContentScrollView()
     this.contentCustomView = view ?: inflate(viewRes!!, this.contentScrollViewFrame!!)
+    if (!scrollable) {
+      // We didn't explicitly want this view to be scrollable but we already had existing
+      // scroll content. So, add top margin to separate a bit.
+      this.contentCustomView!!.apply {
+        updateMargin(top = topMargin() + dimenPx(R.dimen.md_dialog_frame_margin_vertical_less))
+        updatePadding(bottom = 0)
+      }
+    }
     this.contentScrollViewFrame!!.addView(this.contentCustomView)
   } else {
     this.contentCustomView = view ?: inflate(viewRes!!, this.view)

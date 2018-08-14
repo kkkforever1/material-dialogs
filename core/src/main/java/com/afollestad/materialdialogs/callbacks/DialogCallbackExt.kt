@@ -5,10 +5,18 @@ import com.afollestad.materialdialogs.DialogCallback
 import com.afollestad.materialdialogs.MaterialDialog
 
 /**
- * Sets a listener that's invoked when the dialog is [show]'n. If this is called
+ * Adds a listener that's invoked right before the dialog is [show]'n. If this is called
  * multiple times, it appends additional callbacks, rather than overwriting.
  */
-@CheckResult
+fun MaterialDialog.onPreShow(callback: DialogCallback): MaterialDialog {
+  this.preShowListeners.add(callback)
+  return this
+}
+
+/**
+ * Adds a listener that's invoked when the dialog is [show]'n. If this is called
+ * multiple times, it appends additional callbacks, rather than overwriting.
+ */
 fun MaterialDialog.onShow(callback: DialogCallback): MaterialDialog {
   this.showListeners.add(callback)
   if (this.isShowing) {
@@ -24,10 +32,9 @@ fun MaterialDialog.onShow(callback: DialogCallback): MaterialDialog {
 }
 
 /**
- * Sets a listener that's invoked when the dialog is [dismiss]'d. If this is called
+ * Adds a listener that's invoked when the dialog is [dismiss]'d. If this is called
  * multiple times, it appends additional callbacks, rather than overwriting.
  */
-@CheckResult
 fun MaterialDialog.onDismiss(callback: DialogCallback): MaterialDialog {
   this.dismissListeners.add(callback)
   if (this.dismissListeners.isNotEmpty()) {
@@ -39,10 +46,9 @@ fun MaterialDialog.onDismiss(callback: DialogCallback): MaterialDialog {
 }
 
 /**
- * Sets a listener that's invoked when the dialog is [cancel]'d. If this is called
+ * Adds a listener that's invoked when the dialog is [cancel]'d. If this is called
  * multiple times, it appends additional callbacks, rather than overwriting.
  */
-@CheckResult
 fun MaterialDialog.onCancel(callback: DialogCallback): MaterialDialog {
   this.cancelListeners.add(callback)
   if (this.cancelListeners.isNotEmpty()) {

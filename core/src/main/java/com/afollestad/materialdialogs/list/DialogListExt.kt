@@ -163,7 +163,7 @@ internal fun MaterialDialog.getItemSelector() =
   )
 
 private fun MaterialDialog.addContentRecyclerView() {
-  if (this.contentScrollView != null || this.textInputLayout != null) {
+  if (this.contentScrollView != null || this.contentCustomView != null) {
     throw IllegalStateException(
         "Your dialog has already been setup with a different type " +
             "(e.g. with a message, input field, etc.)"

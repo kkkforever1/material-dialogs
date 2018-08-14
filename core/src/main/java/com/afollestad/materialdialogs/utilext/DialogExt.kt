@@ -17,27 +17,26 @@ import android.support.annotation.ColorInt
 import android.support.annotation.ColorRes
 import android.support.annotation.DrawableRes
 import android.support.annotation.LayoutRes
+import android.support.annotation.RestrictTo
+import android.support.annotation.RestrictTo.Scope
 import android.support.annotation.StringRes
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.view.WindowManager
 import android.view.inputmethod.InputMethodManager
-import android.view.inputmethod.InputMethodManager.SHOW_IMPLICIT
 import android.widget.ImageView
-import android.widget.LinearLayout
 import android.widget.TextView
 import com.afollestad.materialdialogs.MaterialDialog
 import com.afollestad.materialdialogs.R
 import com.afollestad.materialdialogs.actions.hasActionButtons
+import com.afollestad.materialdialogs.callbacks.invokeAll
 import com.afollestad.materialdialogs.shared.getColor
 import com.afollestad.materialdialogs.shared.getDrawable
-import com.afollestad.materialdialogs.shared.postApply
-import com.afollestad.materialdialogs.shared.updateMargin
 import com.afollestad.materialdialogs.shared.updatePadding
 
-@Suppress("UNCHECKED_CAST")
-internal fun <T> MaterialDialog.inflate(
+@RestrictTo(Scope.LIBRARY_GROUP)
+fun <T> MaterialDialog.inflate(
   @LayoutRes res: Int,
   root: ViewGroup? = null
 ): T {
@@ -99,27 +98,13 @@ internal fun MaterialDialog.setDefaults() {
   colorBackground(color = backgroundColor)
 }
 
-internal fun MaterialDialog.addContentScrollView() {
-  if (this.contentScrollView != null) {
-    return
-  }
-  this.contentScrollView = inflate(R.layout.md_dialog_stub_scrollview, this.view)
-  this.contentScrollView!!.rootView = this.view
-  this.contentScrollViewFrame = this.contentScrollView!!.getChildAt(0) as LinearLayout
-  this.view.addView(this.contentScrollView, 1)
-}
-
 internal fun MaterialDialog.preShow() {
+  this.preShowListeners.invokeAll(this)
   this.view.apply {
     if (titleLayout.shouldNotBeVisible()) {
       contentView.updatePadding(
           top = frameMarginVerticalLess,
           bottom = frameMarginVerticalLess
-      )
-    }
-    if (textViewMessage != null && textInputLayout != null) {
-      textInputLayout?.updateMargin(
-          top = frameMarginVerticalLess
       )
     }
   }
@@ -172,16 +157,6 @@ internal fun MaterialDialog.setText(
     textView.text = value
   } else {
     textView.visibility = View.GONE
-  }
-}
-
-internal fun MaterialDialog.showKeyboardIfApplicable() {
-  val editText = textInputLayout?.editText ?: return
-  editText.postApply {
-    requestFocus()
-    val imm =
-      windowContext.getSystemService(INPUT_METHOD_SERVICE) as InputMethodManager
-    imm.showSoftInput(editText, SHOW_IMPLICIT)
   }
 }
 

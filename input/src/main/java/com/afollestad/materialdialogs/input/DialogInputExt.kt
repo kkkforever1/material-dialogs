@@ -8,30 +8,28 @@
 
 package com.afollestad.materialdialogs.input
 
+import android.annotation.SuppressLint
 import android.support.annotation.CheckResult
 import android.support.annotation.StringRes
 import android.support.design.widget.TextInputLayout
 import android.text.InputType
 import android.widget.EditText
 import com.afollestad.materialdialogs.MaterialDialog
-import com.afollestad.materialdialogs.R.layout
-import com.afollestad.materialdialogs.WhichButton.POSITIVE
-import com.afollestad.materialdialogs.actions.setActionButtonEnabled
+import com.afollestad.materialdialogs.callbacks.onPreShow
+import com.afollestad.materialdialogs.customview.customView
+import com.afollestad.materialdialogs.customview.getCustomView
 import com.afollestad.materialdialogs.shared.textChanged
-import com.afollestad.materialdialogs.utilext.addContentScrollView
-import com.afollestad.materialdialogs.utilext.getString
-import com.afollestad.materialdialogs.utilext.inflate
 
 typealias InputCallback = ((MaterialDialog, CharSequence) -> Unit)?
 
 @CheckResult
 fun MaterialDialog.getInputLayout(): TextInputLayout? {
-  return this.textInputLayout
+  return this.getCustomView() as? TextInputLayout
 }
 
 @CheckResult
 fun MaterialDialog.getInputField(): EditText? {
-  return this.textInputLayout?.editText
+  return getInputLayout()?.editText
 }
 
 /**
@@ -50,6 +48,7 @@ fun MaterialDialog.getInputField(): EditText? {
  *    the dialog has buttons.
  * @param callback A listener to invoke for input text notifications.
  */
+@SuppressLint("CheckResult")
 @CheckResult
 fun MaterialDialog.input(
   hint: String? = null,
@@ -61,19 +60,24 @@ fun MaterialDialog.input(
   waitForPositiveButton: Boolean = true,
   callback: InputCallback = null
 ): MaterialDialog {
-  addInputField()
+  customView(R.layout.md_dialog_stub_input)
+  onPreShow { showKeyboardIfApplicable() }
+
   if (callback != null && waitForPositiveButton) {
     // Add an additional callback to invoke the input listener after the positive AB is pressed
     positiveButton { callback.invoke(this@input, getInputField()!!.text) }
   }
 
-  val editText = this.textInputLayout!!.editText!!
-  editText.setText(prefill ?: getString(prefillRes))
-  editText.hint = hint ?: getString(hintRes)
+  val resources = windowContext.resources
+  val editText = getInputField()!!
+  editText.setText(
+      prefill ?: if (prefillRes != null) resources.getString(prefillRes) else null
+  )
+  editText.hint = hint ?: if (hintRes != null) resources.getString(hintRes) else null
   editText.inputType = inputType
 
   if (maxLength != null) {
-    this.textInputLayout!!.apply {
+    getInputLayout()!!.apply {
       isCounterEnabled = true
       counterMaxLength = maxLength
     }
@@ -91,27 +95,4 @@ fun MaterialDialog.input(
   }
 
   return this
-}
-
-private fun MaterialDialog.invalidateInputMaxLength() {
-  val editText = this.textInputLayout!!.editText!!
-  val maxLength = this.textInputLayout!!.counterMaxLength
-  val currentLength = editText.text.length
-  if (maxLength > 0) {
-    setActionButtonEnabled(POSITIVE, currentLength <= maxLength)
-  }
-}
-
-private fun MaterialDialog.addInputField() {
-  if (this.contentRecyclerView != null) {
-    throw IllegalStateException(
-        "Your dialog has already been setup with a unsupported different type " +
-            "(e.g. with a list, etc.)"
-    )
-  }
-  addContentScrollView()
-  this.textInputLayout = inflate(
-      layout.md_dialog_stub_input, this.contentScrollViewFrame!!
-  )
-  this.contentScrollViewFrame!!.addView(this.textInputLayout)
 }

@@ -23,6 +23,7 @@ android {
 
 dependencies {
   implementation project(':core')
+  implementation project(':input')
   implementation project(':files')
   implementation project(':color')
 

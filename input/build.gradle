@@ -23,7 +23,7 @@ android {
 }
 
 dependencies {
-  implementation 'com.android.support:recyclerview-v7:' + versions.supportLib
+  implementation 'com.android.support:design:' + versions.supportLib
   implementation 'org.jetbrains.kotlin:kotlin-stdlib-jdk7:' + versions.kotlin
   implementation project(':core')
   implementation project(':shared')
@@ -31,5 +31,5 @@ dependencies {
 
 apply from: '../spotless.gradle'
 
-ext.shard = 'color'
+ext.shard = 'input'
 apply from: '../bintray.gradle'

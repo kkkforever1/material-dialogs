@@ -25,10 +25,13 @@ Looking for older versions, before version 2.0.0? [Click here](README_OLD.md).
     3. [Multiple Choice](#multiple-choice)
     4. [Custom Adapters](#custom-adapters)
 5. [Checkbox Prompts](#checkbox-prompts)
-6. [Text Input](#text-input)
+6. [Custom Views](#custom-views)
+
+# Table of Contents - Input
+
+1. [Text Input](#text-input)
     1. [Max Length](#max-length)
     2. [Custom Validation](#custom-validation)
-7. [Custom Views](#custom-views)
 
 # Table of Contents - Files
 
@@ -64,14 +67,16 @@ changed and a lot of things will be broken if you upgrade from the older version
 to note:
 
 1. There is no longer a separate `Builder` class, it's all-in-one.
-2. The use of the neutral button is deprecated to discourage use, see the 
+2. All classes exist in the `core` module, the other extension dependencies
+take advantage of Kotlin extensions to add functionality to it.
+3. The use of the neutral button is deprecated to discourage use, see the 
 [newer Material guidelines](https://material.io/design/components/dialogs.html#actions).
-3. There is no longer a progress dialog included in library, since they are discouraged by Google, 
+4. There is no longer a progress dialog included in library, since they are discouraged by Google, 
 and discouraged by me. You should prefer a non-blocking inline progress indicator.
-4. No dynamic color support, your dialogs will match your app theme. *I will be making sure 
+5. No dynamic color support, your dialogs will match your app theme. *I will be making sure 
 [Aesthetic](https://github.com/afollestad/aesthetic) works correctly with this library if you really 
 need dynamic theming.*
-5. Other things will probably be added here.
+6. Other things will probably be added here.
 
 ## Getting Started
 
@@ -99,13 +104,28 @@ need dynamic theming.*
 
 ## Checkbox Prompts
 
+## Custom Views
+
+---
+
+# Input
+
+## Gradle Dependency
+
+The `input` module contains extensions to the core module, such as a text input dialog.
+
+```gradle
+dependencies {
+	
+    implementation 'com.afollestad.material-dialogs:input:2.0.0-alpha1'
+}
+```
+
 ## Text Input
 
 ### Max Length
 
 ### Custom Validation
-
-## Custom Views
 
 ---
 

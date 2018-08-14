@@ -49,6 +49,12 @@ fun <T : View> T.updatePadding(
 }
 
 @RestrictTo(Scope.LIBRARY_GROUP)
+fun <T : View> T.topMargin(): Int {
+  val layoutParams = this.layoutParams as MarginLayoutParams
+  return layoutParams.topMargin
+}
+
+@RestrictTo(Scope.LIBRARY_GROUP)
 fun <T : View> T.updateMargin(
   left: Int = -1,
   top: Int = -1,

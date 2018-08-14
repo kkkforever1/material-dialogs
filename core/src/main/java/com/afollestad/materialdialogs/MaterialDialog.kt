@@ -13,8 +13,9 @@ import android.content.Context
 import android.graphics.drawable.Drawable
 import android.support.annotation.CheckResult
 import android.support.annotation.DrawableRes
+import android.support.annotation.RestrictTo
+import android.support.annotation.RestrictTo.Scope
 import android.support.annotation.StringRes
-import android.support.design.widget.TextInputLayout
 import android.view.View
 import android.widget.LinearLayout
 import android.widget.TextView
@@ -31,7 +32,6 @@ import com.afollestad.materialdialogs.internal.list.DialogRecyclerView
 import com.afollestad.materialdialogs.internal.main.DialogLayout
 import com.afollestad.materialdialogs.internal.main.DialogScrollView
 import com.afollestad.materialdialogs.list.getListAdapter
-import com.afollestad.materialdialogs.utilext.addContentScrollView
 import com.afollestad.materialdialogs.utilext.assertOneSet
 import com.afollestad.materialdialogs.utilext.getString
 import com.afollestad.materialdialogs.utilext.hideKeyboard
@@ -41,7 +41,6 @@ import com.afollestad.materialdialogs.utilext.setDefaults
 import com.afollestad.materialdialogs.utilext.setIcon
 import com.afollestad.materialdialogs.utilext.setText
 import com.afollestad.materialdialogs.utilext.setWindowConstraints
-import com.afollestad.materialdialogs.utilext.showKeyboardIfApplicable
 
 typealias DialogCallback = (MaterialDialog) -> Unit
 
@@ -65,12 +64,12 @@ class MaterialDialog(
 
   internal val view: DialogLayout = inflate(R.layout.md_dialog_base)
   internal var textViewMessage: TextView? = null
-  internal var textInputLayout: TextInputLayout? = null
   internal var contentScrollView: DialogScrollView? = null
   internal var contentScrollViewFrame: LinearLayout? = null
   internal var contentRecyclerView: DialogRecyclerView? = null
   internal var contentCustomView: View? = null
 
+  internal val preShowListeners = mutableListOf<DialogCallback>()
   internal val showListeners = mutableListOf<DialogCallback>()
   internal val dismissListeners = mutableListOf<DialogCallback>()
   internal val cancelListeners = mutableListOf<DialogCallback>()
@@ -137,6 +136,9 @@ class MaterialDialog(
     @StringRes textRes: Int? = null,
     text: CharSequence? = null
   ): MaterialDialog {
+    if (this.contentCustomView != null) {
+      throw IllegalStateException("message() should be used BEFORE customView().")
+    }
     addContentScrollView()
     addContentMessageView(textRes, text)
     return this
@@ -256,7 +258,6 @@ class MaterialDialog(
   override fun show() {
     preShow()
     super.show()
-    showKeyboardIfApplicable()
   }
 
   /** Applies multiple properties to the dialog and opens it. */
@@ -271,10 +272,14 @@ class MaterialDialog(
     super.dismiss()
   }
 
+  @RestrictTo(Scope.LIBRARY_GROUP)
   fun invalidateDividers(
     scrolledDown: Boolean,
     atBottom: Boolean
   ) = view.invalidateDividers(scrolledDown, atBottom)
+
+  @RestrictTo(Scope.LIBRARY_GROUP)
+  fun isContentScrollViewAdded() = this.contentScrollView != null
 
   internal fun onActionButtonClicked(which: WhichButton) {
     when (which) {
@@ -288,6 +293,15 @@ class MaterialDialog(
     }
     if (autoDismissEnabled) {
       dismiss()
+    }
+  }
+
+  internal fun addContentScrollView() {
+    if (this.contentScrollView == null) {
+      this.contentScrollView = inflate(R.layout.md_dialog_stub_scrollview, this.view)
+      this.contentScrollView!!.rootView = this.view
+      this.contentScrollViewFrame = this.contentScrollView!!.getChildAt(0) as LinearLayout
+      this.view.addView(this.contentScrollView, 1)
     }
   }
 
