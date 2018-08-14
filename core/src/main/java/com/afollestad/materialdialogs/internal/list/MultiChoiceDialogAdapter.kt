@@ -14,6 +14,7 @@ import android.view.ViewGroup
 import android.widget.TextView
 import com.afollestad.materialdialogs.MaterialDialog
 import com.afollestad.materialdialogs.R
+import com.afollestad.materialdialogs.WhichButton.POSITIVE
 import com.afollestad.materialdialogs.list.MultiChoiceListener
 import com.afollestad.materialdialogs.list.getItemSelector
 import com.afollestad.materialdialogs.shared.inflate
@@ -23,9 +24,7 @@ import com.afollestad.materialdialogs.utilext.pullIndices
 /** @author Aidan Follestad (afollestad) */
 internal class MultiChoiceViewHolder(
   itemView: View,
-  private val adapter: MultiChoiceDialogAdapter,
-  private val dialog: MaterialDialog,
-  private val waitForActionButton: Boolean
+  private val adapter: MultiChoiceDialogAdapter
 ) : RecyclerView.ViewHolder(itemView), OnClickListener {
   init {
     itemView.setOnClickListener(this)
@@ -34,27 +33,7 @@ internal class MultiChoiceViewHolder(
   val controlView: AppCompatCheckBox = itemView.findViewById(R.id.md_control)
   val titleView: TextView = itemView.findViewById(R.id.md_title)
 
-  override fun onClick(view: View) {
-    val newSelection = adapter.currentSelection.toMutableList()
-    if (newSelection.contains(adapterPosition)) {
-      newSelection.remove(adapterPosition)
-    } else {
-      newSelection.add(adapterPosition)
-    }
-    adapter.currentSelection = newSelection.toTypedArray()
-
-    if (waitForActionButton && dialog.hasActionButtons()) {
-      // Wait for action button, don't call listener
-      // so that positive action button press can do so later.
-    } else {
-      // Don't wait for action button, call listener and dismiss if auto dismiss is applicable
-      val selectedItems = adapter.items.pullIndices(adapter.currentSelection)
-      adapter.selection?.invoke(dialog, adapter.currentSelection, selectedItems)
-      if (dialog.autoDismiss && !dialog.hasActionButtons()) {
-        dialog.dismiss()
-      }
-    }
-  }
+  override fun onClick(view: View) = adapter.itemClicked(adapterPosition)
 }
 
 /**
@@ -88,6 +67,29 @@ internal class MultiChoiceDialogAdapter(
       }
     }
 
+  internal fun itemClicked(index: Int) {
+    val newSelection = this.currentSelection.toMutableList()
+    if (newSelection.contains(index)) {
+      newSelection.remove(index)
+    } else {
+      newSelection.add(index)
+    }
+    this.currentSelection = newSelection.toTypedArray()
+
+    if (waitForActionButton && dialog.hasActionButtons()) {
+      // Wait for action button, don't call listener
+      // so that positive action button press can do so later.
+      dialog.setActionButtonEnabled(POSITIVE, true)
+    } else {
+      // Don't wait for action button, call listener and dismiss if auto dismiss is applicable
+      val selectedItems = this.items.pullIndices(this.currentSelection)
+      this.selection?.invoke(dialog, this.currentSelection, selectedItems)
+      if (dialog.autoDismiss && !dialog.hasActionButtons()) {
+        dialog.dismiss()
+      }
+    }
+  }
+
   override fun onCreateViewHolder(
     parent: ViewGroup,
     viewType: Int
@@ -95,9 +97,7 @@ internal class MultiChoiceDialogAdapter(
     val listItemView: View = parent.inflate(dialog.windowContext, R.layout.md_listitem_multichoice)
     return MultiChoiceViewHolder(
         itemView = listItemView,
-        adapter = this,
-        dialog = dialog,
-        waitForActionButton = waitForActionButton
+        adapter = this
     )
   }
 

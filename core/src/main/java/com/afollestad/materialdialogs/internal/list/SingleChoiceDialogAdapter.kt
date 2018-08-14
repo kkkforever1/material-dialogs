@@ -14,6 +14,7 @@ import android.view.ViewGroup
 import android.widget.TextView
 import com.afollestad.materialdialogs.MaterialDialog
 import com.afollestad.materialdialogs.R
+import com.afollestad.materialdialogs.WhichButton.POSITIVE
 import com.afollestad.materialdialogs.list.SingleChoiceListener
 import com.afollestad.materialdialogs.list.getItemSelector
 import com.afollestad.materialdialogs.shared.inflate
@@ -22,9 +23,7 @@ import com.afollestad.materialdialogs.utilext.hasActionButtons
 /** @author Aidan Follestad (afollestad) */
 internal class SingleChoiceViewHolder(
   itemView: View,
-  private val adapter: SingleChoiceDialogAdapter,
-  private val dialog: MaterialDialog,
-  private val waitForActionButton: Boolean
+  private val adapter: SingleChoiceDialogAdapter
 ) : RecyclerView.ViewHolder(itemView), OnClickListener {
 
   init {
@@ -34,19 +33,7 @@ internal class SingleChoiceViewHolder(
   val controlView: AppCompatRadioButton = itemView.findViewById(R.id.md_control)
   val titleView: TextView = itemView.findViewById(R.id.md_title)
 
-  override fun onClick(view: View) {
-    adapter.currentSelection = adapterPosition
-    if (waitForActionButton && dialog.hasActionButtons()) {
-      // Wait for action button, don't call listener
-      // so that positive action button press can do so later.
-    } else {
-      // Don't wait for action button, call listener and dismiss if auto dismiss is applicable
-      adapter.selection?.invoke(dialog, adapterPosition, adapter.items[adapterPosition])
-      if (dialog.autoDismiss && !dialog.hasActionButtons()) {
-        dialog.dismiss()
-      }
-    }
-  }
+  override fun onClick(view: View) = adapter.itemClicked(adapterPosition)
 }
 
 /**
@@ -70,6 +57,21 @@ internal class SingleChoiceDialogAdapter(
       notifyItemChanged(value)
     }
 
+  internal fun itemClicked(index: Int) {
+    this.currentSelection = index
+    if (waitForActionButton && dialog.hasActionButtons()) {
+      // Wait for action button, don't call listener
+      // so that positive action button press can do so later.
+      dialog.setActionButtonEnabled(POSITIVE, true)
+    } else {
+      // Don't wait for action button, call listener and dismiss if auto dismiss is applicable
+      this.selection?.invoke(dialog, index, this.items[index])
+      if (dialog.autoDismiss && !dialog.hasActionButtons()) {
+        dialog.dismiss()
+      }
+    }
+  }
+
   override fun onCreateViewHolder(
     parent: ViewGroup,
     viewType: Int
@@ -77,9 +79,7 @@ internal class SingleChoiceDialogAdapter(
     val listItemView: View = parent.inflate(dialog.windowContext, R.layout.md_listitem_singlechoice)
     return SingleChoiceViewHolder(
         itemView = listItemView,
-        adapter = this,
-        dialog = dialog,
-        waitForActionButton = waitForActionButton
+        adapter = this
     )
   }
 

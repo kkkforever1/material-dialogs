@@ -64,6 +64,9 @@ internal class DialogActionButton(
 
     // Text alignment
     textAlignment = if (stacked) View.TEXT_ALIGNMENT_VIEW_END else View.TEXT_ALIGNMENT_CENTER
+
+    // Invalidate in case enabled state was changed before this method executed
+    isEnabled = isEnabled
   }
 
   override fun setEnabled(enabled: Boolean) {

@@ -12,11 +12,22 @@ import android.support.annotation.ColorInt
 import android.support.v7.widget.GridLayoutManager
 import android.support.v7.widget.RecyclerView
 import com.afollestad.materialdialogs.MaterialDialog
+import com.afollestad.materialdialogs.WhichButton.POSITIVE
 import com.afollestad.materialdialogs.customview.customView
 import com.afollestad.materialdialogs.customview.getCustomView
 
 typealias ColorCallback = ((dialog: MaterialDialog, color: Int) -> Unit)?
 
+/**
+ * Shows a dialog with a grid of colors that the user can select from.
+ *
+ * @param colors The top-level array of colors integers to display in the grid.
+ * @param subColors Optional sub-level colors which exist under each top-level color.
+ * @param initialSelection The optionally initially selected color literal integer.
+ * @param waitForPositiveButton When true, the callback isn't invoked until the user selects
+ *    a color and taps on the positive action button.
+ * @param callback An optional callback invoked when the user selects a color.
+ */
 @SuppressLint("CheckResult")
 @CheckResult
 fun MaterialDialog.colorChooser(
@@ -49,6 +60,7 @@ fun MaterialDialog.colorChooser(
   customView.adapter = adapter
 
   if (waitForPositiveButton && callback != null) {
+    setActionButtonEnabled(POSITIVE, false)
     positiveButton {
       val color = adapter.selectedColor()
       if (color != null) {

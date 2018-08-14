@@ -14,6 +14,7 @@ import android.support.v7.widget.LinearLayoutManager
 import android.support.v7.widget.RecyclerView
 import com.afollestad.materialdialogs.MaterialDialog
 import com.afollestad.materialdialogs.R
+import com.afollestad.materialdialogs.WhichButton.POSITIVE
 import com.afollestad.materialdialogs.internal.list.MultiChoiceDialogAdapter
 import com.afollestad.materialdialogs.internal.list.PlainListDialogAdapter
 import com.afollestad.materialdialogs.internal.list.SingleChoiceDialogAdapter
@@ -106,6 +107,7 @@ fun MaterialDialog.listItemsSingleChoice(
     return this
   }
 
+  setActionButtonEnabled(POSITIVE, false)
   return customListAdapter(
       SingleChoiceDialogAdapter(
           dialog = this,
@@ -142,6 +144,7 @@ fun MaterialDialog.listItemsMultiChoice(
     return this
   }
 
+  setActionButtonEnabled(POSITIVE, false)
   return customListAdapter(
       MultiChoiceDialogAdapter(
           dialog = this,

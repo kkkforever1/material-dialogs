@@ -14,6 +14,7 @@ import android.view.View.OnClickListener
 import android.view.ViewGroup
 import android.widget.ImageView
 import com.afollestad.materialdialogs.MaterialDialog
+import com.afollestad.materialdialogs.WhichButton.POSITIVE
 import com.afollestad.materialdialogs.shared.getColor
 import com.afollestad.materialdialogs.shared.isColorDark
 import com.afollestad.materialdialogs.shared.setVisibleOrGone
@@ -58,6 +59,7 @@ internal class ColorGridAdapter(
       return
     }
 
+    dialog.setActionButtonEnabled(POSITIVE, true)
     if (inSub) {
       val previousSelection = selectedSubIndex
       selectedSubIndex = index
@@ -73,7 +75,11 @@ internal class ColorGridAdapter(
     }
 
     selectedTopIndex = index
-    if (subColors != null) inSub = true
+    if (subColors != null) {
+      inSub = true
+      // Preselect top color in sub-colors if it exists
+      selectedSubIndex = subColors[selectedTopIndex].find { it == colors[selectedTopIndex] } ?: -1
+    }
 
     callback?.invoke(dialog, selectedColor()!!)
     notifyDataSetChanged()

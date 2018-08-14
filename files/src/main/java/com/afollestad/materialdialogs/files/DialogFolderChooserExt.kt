@@ -18,6 +18,17 @@ import com.afollestad.materialdialogs.customview.getCustomView
 import com.afollestad.materialdialogs.internal.list.DialogRecyclerView
 import java.io.File
 
+/**
+ * Shows a dialog that lets the user select a local folder.
+ *
+ * @param initialDirectory The directory that is listed initially, defaults to external storage.
+ * @param filter A filter to apply when listing folders, defaults to only show non-hidden folders.
+ * @param waitForPositiveButton When true, the callback isn't invoked until the user selects a
+ *    folder and taps on the positive action button.
+ * @param emptyTextRes A string resource displayed on the empty view shown when a directory is
+ *    empty. Defaults to "This folder's empty!".
+ * @param selection A callback invoked when a folder is selected.
+ */
 @SuppressLint("CheckResult")
 @CheckResult
 fun MaterialDialog.folderChooser(
@@ -52,6 +63,7 @@ fun MaterialDialog.folderChooser(
   list.adapter = adapter
 
   if (waitForPositiveButton && selection != null) {
+    setActionButtonEnabled(POSITIVE, false)
     positiveButton {
       val selectedFile = adapter.selectedFile
       if (selectedFile != null) {
