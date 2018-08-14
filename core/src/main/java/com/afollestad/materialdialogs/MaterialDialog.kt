@@ -47,7 +47,13 @@ class MaterialDialog(
   val windowContext: Context
 ) : Dialog(windowContext, inferTheme(windowContext).styleRes) {
 
-  /** A named config map, used like tags for extensions. */
+  /**
+   * A named config map, used like tags for extensions.
+   *
+   * Developers extending functionality of Material Dialogs should not use things
+   * like static variables to store things. They instead should be stored at a dialog
+   * instance level, which is what this provides.
+   */
   val config: MutableMap<String, Any> = mutableMapOf()
 
   internal var autoDismiss: Boolean = true
