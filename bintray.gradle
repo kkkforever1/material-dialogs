@@ -1,3 +1,8 @@
+if (!project.rootProject.file('local.properties').exists()) {
+  println "Not applying bintray.gradle due to lack of local.properties!"
+  return
+}
+
 apply plugin: 'maven-publish'
 apply plugin: 'com.jfrog.bintray'
 
