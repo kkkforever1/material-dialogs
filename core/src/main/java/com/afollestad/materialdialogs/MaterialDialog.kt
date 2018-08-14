@@ -19,6 +19,7 @@ import android.view.View
 import android.widget.LinearLayout
 import android.widget.TextView
 import com.afollestad.materialdialogs.WhichButton.NEGATIVE
+import com.afollestad.materialdialogs.WhichButton.NEUTRAL
 import com.afollestad.materialdialogs.WhichButton.POSITIVE
 import com.afollestad.materialdialogs.internal.button.DialogActionButtonLayout.Companion.INDEX_NEGATIVE
 import com.afollestad.materialdialogs.internal.button.DialogActionButtonLayout.Companion.INDEX_NEUTRAL
@@ -298,7 +299,6 @@ class MaterialDialog(
   ) = view.invalidateDividers(scrolledDown, atBottom)
 
   internal fun onActionButtonClicked(which: WhichButton) {
-    @Suppress("NON_EXHAUSTIVE_WHEN")
     when (which) {
       POSITIVE -> {
         positiveListeners.invokeAll(this)
@@ -306,6 +306,7 @@ class MaterialDialog(
         adapter?.positiveButtonClicked()
       }
       NEGATIVE -> negativeListeners.invokeAll(this)
+      NEUTRAL -> neutralListeners.invokeAll(this)
     }
     if (autoDismiss) {
       dismiss()
