@@ -46,7 +46,6 @@ import kotlinx.android.synthetic.main.activity_main.custom_view_webview
 import kotlinx.android.synthetic.main.activity_main.file_chooser
 import kotlinx.android.synthetic.main.activity_main.file_chooser_buttons
 import kotlinx.android.synthetic.main.activity_main.file_chooser_filter
-import kotlinx.android.synthetic.main.activity_main.folder_chooser
 import kotlinx.android.synthetic.main.activity_main.folder_chooser_buttons
 import kotlinx.android.synthetic.main.activity_main.folder_chooser_filter
 import kotlinx.android.synthetic.main.activity_main.input
@@ -595,8 +594,6 @@ class MainActivity : AppCompatActivity() {
     file_chooser_buttons.setOnClickListener { showFileChooserButtons() }
 
     file_chooser_filter.setOnClickListener { showFileChooserFilter() }
-
-    folder_chooser.setOnClickListener { showFolderChooser() }
 
     folder_chooser_buttons.setOnClickListener { showFolderChooserButtons() }
 

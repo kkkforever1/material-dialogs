@@ -197,3 +197,8 @@ internal fun MaterialDialog.hideKeyboard() {
     imm.hideSoftInputFromWindow(windowToken, 0)
   }
 }
+
+@CheckResult
+internal fun MaterialDialog.waitForPositiveBtn(given: Boolean): Boolean {
+  return given && hasActionButtons()
+}

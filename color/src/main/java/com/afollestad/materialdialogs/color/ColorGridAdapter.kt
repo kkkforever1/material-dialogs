@@ -40,6 +40,7 @@ internal class ColorGridAdapter(
   private val colors: IntArray,
   private val subColors: Array<IntArray>?,
   @ColorInt private val initialSelection: Int?,
+  private val waitForPositiveButton: Boolean,
   private val callback: ColorCallback
 ) : RecyclerView.Adapter<ColorGridViewHolder>() {
 
@@ -60,12 +61,13 @@ internal class ColorGridAdapter(
     }
 
     dialog.setActionButtonEnabled(POSITIVE, true)
+
     if (inSub) {
       val previousSelection = selectedSubIndex
       selectedSubIndex = index
       notifyItemChanged(previousSelection)
       notifyItemChanged(selectedSubIndex)
-      callback?.invoke(dialog, selectedColor()!!)
+      invokeCallback()
       return
     }
 
@@ -78,10 +80,10 @@ internal class ColorGridAdapter(
     if (subColors != null) {
       inSub = true
       // Preselect top color in sub-colors if it exists
-      selectedSubIndex = subColors[selectedTopIndex].find { it == colors[selectedTopIndex] } ?: -1
+      selectedSubIndex = subColors[selectedTopIndex].indexOfFirst { it == colors[selectedTopIndex] }
     }
 
-    callback?.invoke(dialog, selectedColor()!!)
+    invokeCallback()
     notifyDataSetChanged()
 
   }
@@ -98,10 +100,10 @@ internal class ColorGridAdapter(
 
   init {
     if (initialSelection != null) {
-      selectedTopIndex = colors.find { it == initialSelection } ?: -1
+      selectedTopIndex = colors.indexOfFirst { it == initialSelection }
       if (selectedTopIndex == -1 && subColors != null) {
         for (section in subColors) {
-          selectedSubIndex = section.find { it == initialSelection } ?: -1
+          selectedSubIndex = section.indexOfFirst { it == initialSelection }
           if (selectedSubIndex != -1) {
             inSub = true
             break
@@ -159,4 +161,10 @@ internal class ColorGridAdapter(
     )
   }
 
+  private fun invokeCallback() {
+    val actualWaitForPositive = waitForPositiveButton && dialog.hasActionButtons()
+    if (!actualWaitForPositive) {
+      callback?.invoke(dialog, selectedColor()!!)
+    }
+  }
 }

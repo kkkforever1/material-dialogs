@@ -58,7 +58,9 @@ class MaterialDialog(
    */
   val config: MutableMap<String, Any> = mutableMapOf()
 
-  internal var autoDismiss: Boolean = true
+  /** Returns true if auto dismiss is enabled. */
+  var autoDismissEnabled: Boolean = true
+    internal set
 
   internal val view: DialogLayout = inflate(R.layout.md_dialog_base)
   internal var textViewMessage: TextView? = null
@@ -237,7 +239,7 @@ class MaterialDialog(
    */
   @CheckResult
   fun noAutoDismiss(): MaterialDialog {
-    this.autoDismiss = false
+    this.autoDismissEnabled = false
     return this
   }
 
@@ -336,7 +338,7 @@ class MaterialDialog(
       NEGATIVE -> negativeListeners.invokeAll(this)
       NEUTRAL -> neutralListeners.invokeAll(this)
     }
-    if (autoDismiss) {
+    if (autoDismissEnabled) {
       dismiss()
     }
   }

@@ -16,10 +16,10 @@ import android.widget.EditText
 import com.afollestad.materialdialogs.MaterialDialog
 import com.afollestad.materialdialogs.R.layout
 import com.afollestad.materialdialogs.WhichButton.POSITIVE
+import com.afollestad.materialdialogs.shared.textChanged
 import com.afollestad.materialdialogs.utilext.addContentScrollView
 import com.afollestad.materialdialogs.utilext.getString
 import com.afollestad.materialdialogs.utilext.inflate
-import com.afollestad.materialdialogs.utilext.textChanged
 
 typealias InputCallback = ((MaterialDialog, CharSequence) -> Unit)?
 
@@ -57,7 +57,7 @@ fun MaterialDialog.input(
   @StringRes prefillRes: Int? = null,
   inputType: Int = InputType.TYPE_CLASS_TEXT,
   maxLength: Int? = null,
-  waitForPositiveButton: Boolean = hasActionButtons(),
+  waitForPositiveButton: Boolean = true,
   callback: InputCallback = null
 ): MaterialDialog {
   addInputField()
@@ -78,13 +78,15 @@ fun MaterialDialog.input(
     }
   }
 
-  if (!waitForPositiveButton || maxLength != null) {
-    // Invoke the input listener whenever the text changes, as opposed to with positive AB presses
-    editText.textChanged {
-      callback?.invoke(this@input, it)
-      invalidateInputMaxLength()
-    }
+  if (maxLength != null) {
+    // Add text change listener to invalidate max length enabled state
+    editText.textChanged { invalidateInputMaxLength() }
     invalidateInputMaxLength()
+  }
+
+  if (!waitForPositiveButton && callback != null) {
+    // Add text change listener to call input callback since we don't want to wait for positive AB
+    editText.textChanged { callback.invoke(this, it) }
   }
 
   return this

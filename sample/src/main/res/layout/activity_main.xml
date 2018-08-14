@@ -458,14 +458,6 @@
         />
 
     <Button
-        android:id="@+id/folder_chooser"
-        android:layout_width="match_parent"
-        android:layout_height="@dimen/sample_button_height"
-        android:layout_marginTop="@dimen/sample_button_spacing"
-        android:text="Folder Chooser"
-        />
-
-    <Button
         android:id="@+id/folder_chooser_buttons"
         android:layout_width="match_parent"
         android:layout_height="@dimen/sample_button_height"

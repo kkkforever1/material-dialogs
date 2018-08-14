@@ -60,7 +60,7 @@ fun MaterialDialog.customListAdapter(
 fun MaterialDialog.listItems(
   @ArrayRes arrayRes: Int? = null,
   array: Array<String>? = null,
-  waitForPositiveButton: Boolean = hasActionButtons(),
+  waitForPositiveButton: Boolean = true,
   selection: ItemListener = null
 ): MaterialDialog {
   assertOneSet(arrayRes, array)
@@ -95,7 +95,7 @@ fun MaterialDialog.listItemsSingleChoice(
   @ArrayRes arrayRes: Int? = null,
   array: Array<String>? = null,
   initialSelection: Int = -1,
-  waitForPositiveButton: Boolean = hasActionButtons(),
+  waitForPositiveButton: Boolean = true,
   selection: SingleChoiceListener = null
 ): MaterialDialog {
   assertOneSet(arrayRes, array)
@@ -124,7 +124,7 @@ fun MaterialDialog.listItemsSingleChoice(
  * @param array The literal string array resource to populate the list with.
  * @param initialSelection The initially selected item indices.
  * @param waitForPositiveButton When true, the [selection] listener won't be called until
- *    the positive action button is pressed. Defaults to true if the dialog has buttons.
+ *    the positive action button is pressed.
  * @param selection A listener invoked when an item in the list is selected.
  */
 @CheckResult
@@ -132,7 +132,7 @@ fun MaterialDialog.listItemsMultiChoice(
   @ArrayRes arrayRes: Int? = null,
   array: Array<String>? = null,
   initialSelection: Array<Int> = emptyArray(),
-  waitForPositiveButton: Boolean = hasActionButtons(),
+  waitForPositiveButton: Boolean = true,
   selection: MultiChoiceListener = null
 ): MaterialDialog {
   assertOneSet(arrayRes, array)

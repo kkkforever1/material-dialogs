@@ -22,9 +22,7 @@ private const val KEY_ACTIVATED_INDEX = "activated_index"
 /** @author Aidan Follestad (afollestad) */
 internal class PlainListViewHolder(
   itemView: View,
-  private val adapter: PlainListDialogAdapter,
-  private val dialog: MaterialDialog,
-  private val waitForActionButton: Boolean
+  private val adapter: PlainListDialogAdapter
 ) : RecyclerView.ViewHolder(itemView), OnClickListener {
   init {
     itemView.setOnClickListener(this)
@@ -32,24 +30,7 @@ internal class PlainListViewHolder(
 
   val titleView = (itemView as ViewGroup).getChildAt(0) as TextView
 
-  override fun onClick(view: View) {
-    if (waitForActionButton && dialog.hasActionButtons()) {
-      // Wait for action button, mark clicked item as activated so that we can call the selection
-      // listener when the positive action button is pressed.
-      val lastActivated = dialog.config[KEY_ACTIVATED_INDEX] as? Int
-      dialog.config[KEY_ACTIVATED_INDEX] = adapterPosition
-      if (lastActivated != null) {
-        adapter.notifyItemChanged(lastActivated)
-      }
-      adapter.notifyItemChanged(adapterPosition)
-    } else {
-      // Don't wait for action button, call listener and dismiss if auto dismiss is applicable
-      adapter.selection?.invoke(dialog, adapterPosition, adapter.items[adapterPosition])
-      if (dialog.autoDismiss && !dialog.hasActionButtons()) {
-        dialog.dismiss()
-      }
-    }
-  }
+  override fun onClick(view: View) = adapter.itemClicked(adapterPosition)
 }
 
 /**
@@ -64,6 +45,25 @@ internal class PlainListDialogAdapter(
   internal var selection: ItemListener
 ) : RecyclerView.Adapter<PlainListViewHolder>(), DialogAdapter<String, ItemListener> {
 
+  fun itemClicked(index: Int) {
+    if (waitForActionButton && dialog.hasActionButtons()) {
+      // Wait for action button, mark clicked item as activated so that we can call the selection
+      // listener when the positive action button is pressed.
+      val lastActivated = dialog.config[KEY_ACTIVATED_INDEX] as? Int
+      dialog.config[KEY_ACTIVATED_INDEX] = index
+      if (lastActivated != null) {
+        notifyItemChanged(lastActivated)
+      }
+      notifyItemChanged(index)
+    } else {
+      // Don't wait for action button, call listener and dismiss if auto dismiss is applicable
+      this.selection?.invoke(dialog, index, this.items[index])
+      if (dialog.autoDismissEnabled && !dialog.hasActionButtons()) {
+        dialog.dismiss()
+      }
+    }
+  }
+
   override fun onCreateViewHolder(
     parent: ViewGroup,
     viewType: Int
@@ -71,9 +71,7 @@ internal class PlainListDialogAdapter(
     val listItemView: View = parent.inflate(dialog.windowContext, R.layout.md_listitem)
     return PlainListViewHolder(
         itemView = listItemView,
-        adapter = this,
-        dialog = dialog,
-        waitForActionButton = waitForActionButton
+        adapter = this
     )
   }
 

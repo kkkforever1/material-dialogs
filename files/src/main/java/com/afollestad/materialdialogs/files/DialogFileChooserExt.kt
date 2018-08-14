@@ -37,7 +37,7 @@ typealias FileCallback = ((dialog: MaterialDialog, file: File) -> Unit)?
 fun MaterialDialog.fileChooser(
   initialDirectory: File = getExternalStorageDirectory(),
   filter: FileFilter = { !it.isHidden },
-  waitForPositiveButton: Boolean = hasActionButtons(),
+  waitForPositiveButton: Boolean = true,
   emptyTextRes: Int = R.string.files_default_empty_text,
   selection: FileCallback = null
 ): MaterialDialog {
@@ -57,11 +57,11 @@ fun MaterialDialog.fileChooser(
   val adapter = FileChooserAdapter(
       dialog = this,
       initialFolder = initialDirectory,
-      listView = list,
+      waitForPositiveButton = waitForPositiveButton,
       emptyView = emptyText,
       onlyFolders = false,
       filter = filter,
-      callback = if (waitForPositiveButton) null else selection
+      callback = selection
   )
   list.adapter = adapter
 

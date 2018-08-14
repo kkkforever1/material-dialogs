@@ -1,12 +1,15 @@
-package com.afollestad.materialdialogs.utilext
+package com.afollestad.materialdialogs.shared
 
+import android.support.annotation.RestrictTo
+import android.support.annotation.RestrictTo.Scope
 import android.text.Editable
 import android.text.TextWatcher
 import android.widget.EditText
 
 typealias TextChangeCallback = (CharSequence) -> Unit
 
-internal fun EditText.textChanged(callback: TextChangeCallback) {
+@RestrictTo(Scope.LIBRARY_GROUP)
+fun EditText.textChanged(callback: TextChangeCallback) {
   this.addTextChangedListener(object : TextWatcher {
     override fun afterTextChanged(s: Editable) = Unit
 

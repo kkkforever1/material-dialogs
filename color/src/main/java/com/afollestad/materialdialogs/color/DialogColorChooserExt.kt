@@ -24,9 +24,9 @@ typealias ColorCallback = ((dialog: MaterialDialog, color: Int) -> Unit)?
  * @param colors The top-level array of colors integers to display in the grid.
  * @param subColors Optional sub-level colors which exist under each top-level color.
  * @param initialSelection The optionally initially selected color literal integer.
- * @param waitForPositiveButton When true, the callback isn't invoked until the user selects
+ * @param waitForPositiveButton When true, the selection isn't invoked until the user selects
  *    a color and taps on the positive action button. Defaults to true if the dialog has buttons.
- * @param callback An optional callback invoked when the user selects a color.
+ * @param selection An optional callback invoked when the user selects a color.
  */
 @SuppressLint("CheckResult")
 @CheckResult
@@ -34,8 +34,8 @@ fun MaterialDialog.colorChooser(
   colors: IntArray,
   subColors: Array<IntArray>? = null,
   @ColorInt initialSelection: Int? = null,
-  waitForPositiveButton: Boolean = hasActionButtons(),
-  callback: ColorCallback = null
+  waitForPositiveButton: Boolean = true,
+  selection: ColorCallback = null
 ): MaterialDialog {
   customView(R.layout.md_color_chooser_grid)
   val customView = getCustomView() as RecyclerView
@@ -55,16 +55,17 @@ fun MaterialDialog.colorChooser(
       colors = colors,
       subColors = subColors,
       initialSelection = initialSelection,
-      callback = if (waitForPositiveButton) null else callback
+      waitForPositiveButton = waitForPositiveButton,
+      callback = selection
   )
   customView.adapter = adapter
 
-  if (waitForPositiveButton && callback != null) {
+  if (waitForPositiveButton && selection != null) {
     setActionButtonEnabled(POSITIVE, false)
     positiveButton {
       val color = adapter.selectedColor()
       if (color != null) {
-        callback.invoke(this, color)
+        selection.invoke(this, color)
       }
     }
   }

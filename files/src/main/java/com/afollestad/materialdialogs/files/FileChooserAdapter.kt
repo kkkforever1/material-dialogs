@@ -40,7 +40,7 @@ internal class FileChooserViewHolder(
 internal class FileChooserAdapter(
   private val dialog: MaterialDialog,
   initialFolder: File,
-  private val listView: RecyclerView,
+  private val waitForPositiveButton: Boolean,
   private val emptyView: TextView,
   private val onlyFolders: Boolean,
   private val filter: FileFilter,
@@ -68,19 +68,28 @@ internal class FileChooserAdapter(
 
     val actualIndex = if (currentFolder.hasParent()) index - 1 else index
     val selected = contents[actualIndex].jumpOverEmulated()
-    callback?.invoke(dialog, selected)
 
     if (selected.isDirectory) {
       loadContents(selected)
     } else {
+      val previousSelectedIndex = getSelectedIndex()
       this.selectedFile = selected
-      dialog.setActionButtonEnabled(POSITIVE, true)
+      val actualWaitForPositive = waitForPositiveButton && dialog.hasActionButtons()
+
+      if (actualWaitForPositive) {
+        dialog.setActionButtonEnabled(POSITIVE, true)
+        notifyItemChanged(index)
+        notifyItemChanged(previousSelectedIndex)
+      } else {
+        callback?.invoke(dialog, selected)
+        dialog.dismiss()
+      }
     }
   }
 
   private fun loadContents(directory: File) {
     if (onlyFolders) {
-      this.selectedFile = this.currentFolder
+      this.selectedFile = directory
       dialog.setActionButtonEnabled(POSITIVE, true)
     }
 
@@ -106,6 +115,10 @@ internal class FileChooserAdapter(
     parent: ViewGroup,
     viewType: Int
   ): FileChooserViewHolder {
+    if (onlyFolders && !dialog.hasActionButtons()) {
+      // If we don't have folder chooser action buttons at runtime, force one
+      dialog.positiveButton(android.R.string.ok)
+    }
     val view = LayoutInflater.from(parent.context)
         .inflate(R.layout.md_file_chooser_item, parent, false)
     view.background = getDrawable(dialog.context, attr = R.attr.md_item_selector)
@@ -148,5 +161,12 @@ internal class FileChooserAdapter(
       if (this.isDirectory) R.drawable.icon_folder_light
       else R.drawable.icon_file_light
     }
+  }
+
+  private fun getSelectedIndex(): Int {
+    if (selectedFile == null) return -1
+    else if (contents.isEmpty()) return -1
+    val index = contents.indexOfFirst { it.absolutePath == selectedFile!!.absolutePath }
+    return if (index > -1 && currentFolder.hasParent()) index + 1 else index
   }
 }
