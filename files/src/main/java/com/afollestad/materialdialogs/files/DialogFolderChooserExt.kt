@@ -64,7 +64,6 @@ fun MaterialDialog.folderChooser(
   list.adapter = adapter
 
   if (waitForPositiveButton && selection != null) {
-    setActionButtonEnabled(POSITIVE, false)
     positiveButton {
       val selectedFile = adapter.selectedFile
       if (selectedFile != null) {
