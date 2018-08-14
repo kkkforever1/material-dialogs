@@ -29,6 +29,7 @@ import android.widget.LinearLayout
 import android.widget.TextView
 import com.afollestad.materialdialogs.MaterialDialog
 import com.afollestad.materialdialogs.R
+import com.afollestad.materialdialogs.actions.hasActionButtons
 import com.afollestad.materialdialogs.shared.getColor
 import com.afollestad.materialdialogs.shared.getDrawable
 import com.afollestad.materialdialogs.shared.postApply

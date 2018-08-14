@@ -15,6 +15,8 @@ import android.view.ViewGroup
 import android.widget.ImageView
 import com.afollestad.materialdialogs.MaterialDialog
 import com.afollestad.materialdialogs.WhichButton.POSITIVE
+import com.afollestad.materialdialogs.actions.hasActionButtons
+import com.afollestad.materialdialogs.actions.setActionButtonEnabled
 import com.afollestad.materialdialogs.shared.getColor
 import com.afollestad.materialdialogs.shared.isColorDark
 import com.afollestad.materialdialogs.shared.setVisibleOrGone

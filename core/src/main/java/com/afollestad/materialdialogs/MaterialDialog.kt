@@ -22,6 +22,7 @@ import com.afollestad.materialdialogs.Theme.Companion.inferTheme
 import com.afollestad.materialdialogs.WhichButton.NEGATIVE
 import com.afollestad.materialdialogs.WhichButton.NEUTRAL
 import com.afollestad.materialdialogs.WhichButton.POSITIVE
+import com.afollestad.materialdialogs.callbacks.invokeAll
 import com.afollestad.materialdialogs.internal.button.DialogActionButtonLayout.Companion.INDEX_NEGATIVE
 import com.afollestad.materialdialogs.internal.button.DialogActionButtonLayout.Companion.INDEX_NEUTRAL
 import com.afollestad.materialdialogs.internal.button.DialogActionButtonLayout.Companion.INDEX_POSITIVE
@@ -70,12 +71,13 @@ class MaterialDialog(
   internal var contentRecyclerView: DialogRecyclerView? = null
   internal var contentCustomView: View? = null
 
+  internal val showListeners = mutableListOf<DialogCallback>()
+  internal val dismissListeners = mutableListOf<DialogCallback>()
+  internal val cancelListeners = mutableListOf<DialogCallback>()
+
   private val positiveListeners = mutableListOf<DialogCallback>()
   private val negativeListeners = mutableListOf<DialogCallback>()
   private val neutralListeners = mutableListOf<DialogCallback>()
-  private val showListeners = mutableListOf<DialogCallback>()
-  private val dismissListeners = mutableListOf<DialogCallback>()
-  private val cancelListeners = mutableListOf<DialogCallback>()
 
   init {
     setContentView(view)
@@ -250,60 +252,6 @@ class MaterialDialog(
     return this
   }
 
-  /** Enables or disables an action button. */
-  fun setActionButtonEnabled(
-    which: WhichButton,
-    enabled: Boolean
-  ): MaterialDialog {
-    view.buttonsLayout.actionButtons[which.index].isEnabled = enabled
-    return this
-  }
-
-  /** Returns true if the dialog has visible action buttons. */
-  fun hasActionButtons() = view.buttonsLayout.visibleButtons.isNotEmpty()
-
-  /**
-   * Sets a listener that's invoked when the dialog is [show]'n. If this is called
-   * multiple times, it appends additional callbacks, rather than overwriting.
-   */
-  @CheckResult
-  fun onShow(callback: DialogCallback): MaterialDialog {
-    this.showListeners.add(callback)
-    if (this.showListeners.isNotEmpty()) {
-      return this
-    }
-    setOnShowListener { this.showListeners.invokeAll(this) }
-    return this
-  }
-
-  /**
-   * Sets a listener that's invoked when the dialog is [dismiss]'d. If this is called
-   * multiple times, it appends additional callbacks, rather than overwriting.
-   */
-  @CheckResult
-  fun onDismiss(callback: DialogCallback): MaterialDialog {
-    this.dismissListeners.add(callback)
-    if (this.dismissListeners.isNotEmpty()) {
-      return this
-    }
-    setOnDismissListener { dismissListeners.invokeAll(this) }
-    return this
-  }
-
-  /**
-   * Sets a listener that's invoked when the dialog is [cancel]'d. If this is called
-   * multiple times, it appends additional callbacks, rather than overwriting.
-   */
-  @CheckResult
-  fun onCancel(callback: DialogCallback): MaterialDialog {
-    this.cancelListeners.add(callback)
-    if (this.cancelListeners.isNotEmpty()) {
-      return this
-    }
-    setOnCancelListener { cancelListeners.invokeAll(this) }
-    return this
-  }
-
   /** Opens the dialog. */
   override fun show() {
     preShow()
@@ -353,11 +301,5 @@ class MaterialDialog(
     }
     assertOneSet(res, text)
     this.textViewMessage!!.text = text ?: getString(res)
-  }
-}
-
-private fun MutableList<DialogCallback>.invokeAll(dialog: MaterialDialog) {
-  for (callback in this) {
-    callback.invoke(dialog)
   }
 }

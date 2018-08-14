@@ -15,6 +15,9 @@ import android.webkit.WebView
 import android.widget.CheckBox
 import android.widget.EditText
 import com.afollestad.materialdialogs.MaterialDialog
+import com.afollestad.materialdialogs.callbacks.onCancel
+import com.afollestad.materialdialogs.callbacks.onDismiss
+import com.afollestad.materialdialogs.callbacks.onShow
 import com.afollestad.materialdialogs.checkbox.checkBoxPrompt
 import com.afollestad.materialdialogs.color.colorChooser
 import com.afollestad.materialdialogs.customview.customView
@@ -634,27 +637,30 @@ class MainActivity : AppCompatActivity() {
       debugMode(debugMode)
     }
 
-    val customView = dialog.getCustomView()!!
-    val webView: WebView = customView.findViewById(R.id.web_view)
-    webView.loadData(
-        "<h3>WebView Custom View</h3>\n" +
-            "\n" +
-            "<ol>\n" +
-            "    <li><b>NEW:</b> Hey!</li>\n" +
-            "    <li><b>IMPROVE:</b> Hello!</li>\n" +
-            "    <li><b>FIX:</b> Hi!</li>\n" +
-            "    <li><b>FIX:</b> Hey again!</li>\n" +
-            "    <li><b>FIX:</b> What?</li>\n" +
-            "    <li><b>FIX:</b> This is an example.</li>\n" +
-            "    <li><b>MISC:</b> How are you?</li>\n" +
-            "</ol>\n" +
-            "<p>Material guidelines for dialogs:\n" +
-            "    <a href='http://www.google.com/design/spec/components/dialogs.html'>" +
-            "http://www.google.com/design/spec/components/dialogs.html</a>.\n" +
-            "</p>",
-        "text/html",
-        "UTF-8"
-    )
+    dialog.onShow {
+      val customView = it.getCustomView()!!
+      val webView: WebView = customView.findViewById(R.id.web_view)
+
+      webView.loadData(
+          "<h3>WebView Custom View</h3>\n" +
+              "\n" +
+              "<ol>\n" +
+              "    <li><b>NEW:</b> Hey!</li>\n" +
+              "    <li><b>IMPROVE:</b> Hello!</li>\n" +
+              "    <li><b>FIX:</b> Hi!</li>\n" +
+              "    <li><b>FIX:</b> Hey again!</li>\n" +
+              "    <li><b>FIX:</b> What?</li>\n" +
+              "    <li><b>FIX:</b> This is an example.</li>\n" +
+              "    <li><b>MISC:</b> How are you?</li>\n" +
+              "</ol>\n" +
+              "<p>Material guidelines for dialogs:\n" +
+              "    <a href='http://www.google.com/design/spec/components/dialogs.html'>" +
+              "http://www.google.com/design/spec/components/dialogs.html</a>.\n" +
+              "</p>",
+          "text/html",
+          "UTF-8"
+      )
+    }
   }
 
   private fun showFileChooser() {
