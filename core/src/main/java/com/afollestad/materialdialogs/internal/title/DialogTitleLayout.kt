@@ -18,9 +18,9 @@ import com.afollestad.materialdialogs.R
 import com.afollestad.materialdialogs.internal.main.BaseSubLayout
 import com.afollestad.materialdialogs.internal.main.DEBUG_COLOR_DARK_PINK
 import com.afollestad.materialdialogs.internal.main.DEBUG_COLOR_PINK
-import com.afollestad.materialdialogs.utilext.dimenPx
-import com.afollestad.materialdialogs.utilext.isNotVisible
-import com.afollestad.materialdialogs.utilext.isVisible
+import com.afollestad.materialdialogs.shared.dimenPx
+import com.afollestad.materialdialogs.shared.isNotVisible
+import com.afollestad.materialdialogs.shared.isVisible
 import java.lang.Math.max
 
 /**

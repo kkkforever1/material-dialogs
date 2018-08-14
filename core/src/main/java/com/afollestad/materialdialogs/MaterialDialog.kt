@@ -203,7 +203,7 @@ class MaterialDialog(
     click: DialogCallback? = null
   ): MaterialDialog {
     if (click != null) {
-      negativeListeners.add(click)
+      neutralListeners.add(click)
     }
 
     val btn = view.buttonsLayout.actionButtons[INDEX_NEUTRAL]
@@ -285,6 +285,11 @@ class MaterialDialog(
     hideKeyboard()
     super.dismiss()
   }
+
+  fun invalidateDividers(
+    scrolledDown: Boolean,
+    atBottom: Boolean
+  ) = view.invalidateDividers(scrolledDown, atBottom)
 
   internal fun onActionButtonClicked(which: WhichButton) {
     @Suppress("NON_EXHAUSTIVE_WHEN")

@@ -12,8 +12,11 @@ import android.support.v7.widget.LinearLayoutManager
 import android.support.v7.widget.RecyclerView
 import android.util.AttributeSet
 import android.util.Log
+import com.afollestad.materialdialogs.MaterialDialog
 import com.afollestad.materialdialogs.internal.main.DialogLayout
-import com.afollestad.materialdialogs.utilext.waitForLayout
+import com.afollestad.materialdialogs.shared.waitForLayout
+
+typealias InvalidateDividersDelegate = (scrolledDown: Boolean, atBottom: Boolean) -> Unit
 
 /**
  * A [RecyclerView] which reports whether or not it's scrollable, along with reporting back to a
@@ -21,12 +24,16 @@ import com.afollestad.materialdialogs.utilext.waitForLayout
  *
  * @author Aidan Follestad (afollestad)
  */
-internal class DialogRecyclerView(
+class DialogRecyclerView(
   context: Context,
   attrs: AttributeSet? = null
 ) : RecyclerView(context, attrs) {
 
-  var rootView: DialogLayout? = null
+  private var invalidateDividersDelegate: InvalidateDividersDelegate? = null
+
+  fun attach(dialog: MaterialDialog) {
+    this.invalidateDividersDelegate = dialog::invalidateDividers
+  }
 
   override fun onAttachedToWindow() {
     super.onAttachedToWindow()
@@ -89,7 +96,7 @@ internal class DialogRecyclerView(
     if (childCount == 0 || measuredHeight == 0) {
       return
     }
-    rootView?.invalidateDividers(!isAtTop(), !isAtBottom())
+    invalidateDividersDelegate?.invoke(!isAtTop(), !isAtBottom())
   }
 
   private fun isScrollable(): Boolean {

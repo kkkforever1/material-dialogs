@@ -19,8 +19,8 @@ import com.afollestad.materialdialogs.checkbox.checkBoxPrompt
 import com.afollestad.materialdialogs.color.colorChooser
 import com.afollestad.materialdialogs.customview.customView
 import com.afollestad.materialdialogs.customview.getCustomView
-import com.afollestad.materialdialogs.file.fileChooser
-import com.afollestad.materialdialogs.file.folderChooser
+import com.afollestad.materialdialogs.files.fileChooser
+import com.afollestad.materialdialogs.files.folderChooser
 import com.afollestad.materialdialogs.input.input
 import com.afollestad.materialdialogs.list.listItems
 import com.afollestad.materialdialogs.list.listItemsMultiChoice
@@ -668,7 +668,7 @@ class MainActivity : AppCompatActivity() {
       }
 
       MaterialDialog(this).show {
-        fileChooser { file ->
+        fileChooser { _, file ->
           toast("Selected file: ${file.absolutePath}")
         }
         debugMode(debugMode)
@@ -684,7 +684,7 @@ class MainActivity : AppCompatActivity() {
       }
 
       MaterialDialog(this).show {
-        fileChooser { file ->
+        fileChooser { _, file ->
           toast("Selected file: ${file.absolutePath}")
         }
         negativeButton(android.R.string.cancel)
@@ -702,7 +702,7 @@ class MainActivity : AppCompatActivity() {
       }
 
       MaterialDialog(this).show {
-        fileChooser(filter = { it.extension == "txt" }) { file ->
+        fileChooser(filter = { it.extension == "txt" }) { _, file ->
           toast("Selected file: ${file.absolutePath}")
         }
         debugMode(debugMode)
@@ -718,7 +718,7 @@ class MainActivity : AppCompatActivity() {
       }
 
       MaterialDialog(this).show {
-        folderChooser { folder ->
+        folderChooser { _, folder ->
           toast("Selected folder: ${folder.absolutePath}")
         }
         debugMode(debugMode)
@@ -734,7 +734,7 @@ class MainActivity : AppCompatActivity() {
       }
 
       MaterialDialog(this).show {
-        folderChooser { folder ->
+        folderChooser { _, folder ->
           toast("Selected folder: ${folder.absolutePath}")
         }
         negativeButton(android.R.string.cancel)
@@ -752,7 +752,7 @@ class MainActivity : AppCompatActivity() {
       }
 
       MaterialDialog(this).show {
-        folderChooser(filter = { it.name.startsWith("a", true) }) { folder ->
+        folderChooser(filter = { it.name.startsWith("a", true) }) { _, folder ->
           toast("Selected folder: ${folder.absolutePath}")
         }
         debugMode(debugMode)

@@ -6,7 +6,6 @@
 
 package com.afollestad.materialdialogs.utilext
 
-import android.content.Context
 import android.content.Context.INPUT_METHOD_SERVICE
 import android.graphics.Point
 import android.graphics.drawable.Drawable
@@ -19,7 +18,6 @@ import android.support.annotation.ColorRes
 import android.support.annotation.DrawableRes
 import android.support.annotation.LayoutRes
 import android.support.annotation.StringRes
-import android.support.v4.content.ContextCompat
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -27,10 +25,15 @@ import android.view.WindowManager
 import android.view.inputmethod.InputMethodManager
 import android.view.inputmethod.InputMethodManager.SHOW_IMPLICIT
 import android.widget.ImageView
+import android.widget.LinearLayout
 import android.widget.TextView
-import com.afollestad.materialdialogs.DialogCallback
 import com.afollestad.materialdialogs.MaterialDialog
 import com.afollestad.materialdialogs.R
+import com.afollestad.materialdialogs.shared.getColor
+import com.afollestad.materialdialogs.shared.getDrawable
+import com.afollestad.materialdialogs.shared.postApply
+import com.afollestad.materialdialogs.shared.updateMargin
+import com.afollestad.materialdialogs.shared.updatePadding
 
 @Suppress("UNCHECKED_CAST")
 internal fun <T> MaterialDialog.inflate(
@@ -101,7 +104,7 @@ internal fun MaterialDialog.addContentScrollView() {
   }
   this.contentScrollView = inflate(R.layout.md_dialog_stub_scrollview, this.view)
   this.contentScrollView!!.rootView = this.view
-  this.contentScrollViewFrame = this.contentScrollView!![0]
+  this.contentScrollViewFrame = this.contentScrollView!!.getChildAt(0) as LinearLayout
   this.view.addView(this.contentScrollView, 1)
 }
 
@@ -133,28 +136,6 @@ internal fun MaterialDialog.getString(
   val resourceId = res ?: (fallback ?: 0)
   if (resourceId == 0) return null
   return windowContext.resources.getText(resourceId)
-}
-
-internal fun getDrawable(
-  context: Context,
-  @DrawableRes res: Int? = null,
-  @AttrRes attr: Int? = null,
-  fallback: Drawable? = null
-): Drawable? {
-  if (attr != null) {
-    val a = context.theme.obtainStyledAttributes(intArrayOf(attr))
-    try {
-      var d = a.getDrawable(0)
-      if (d == null && fallback != null) {
-        d = fallback
-      }
-      return d
-    } finally {
-      a.recycle()
-    }
-  }
-  if (res == null) return fallback
-  return ContextCompat.getDrawable(context, res)
 }
 
 internal fun MaterialDialog.getStringArray(@ArrayRes res: Int?): Array<String> {

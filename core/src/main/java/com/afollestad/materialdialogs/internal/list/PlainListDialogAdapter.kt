@@ -15,9 +15,8 @@ import com.afollestad.materialdialogs.MaterialDialog
 import com.afollestad.materialdialogs.R
 import com.afollestad.materialdialogs.list.ItemListener
 import com.afollestad.materialdialogs.list.getItemSelector
-import com.afollestad.materialdialogs.utilext.get
+import com.afollestad.materialdialogs.shared.inflate
 import com.afollestad.materialdialogs.utilext.hasActionButtons
-import com.afollestad.materialdialogs.utilext.inflate
 
 private const val KEY_ACTIVATED_INDEX = "activated_index"
 
@@ -32,7 +31,7 @@ internal class PlainListViewHolder(
     itemView.setOnClickListener(this)
   }
 
-  val titleView: TextView = (itemView as ViewGroup)[0]!!
+  val titleView = (itemView as ViewGroup).getChildAt(0) as TextView
 
   override fun onClick(view: View) {
     if (waitForActionButton && dialog.hasActionButtons()) {

@@ -16,8 +16,8 @@ import com.afollestad.materialdialogs.internal.main.BaseSubLayout
 import com.afollestad.materialdialogs.internal.main.DEBUG_COLOR_BLUE
 import com.afollestad.materialdialogs.internal.main.DEBUG_COLOR_DARK_PINK
 import com.afollestad.materialdialogs.internal.main.DEBUG_COLOR_PINK
-import com.afollestad.materialdialogs.utilext.dimenPx
-import com.afollestad.materialdialogs.utilext.isVisible
+import com.afollestad.materialdialogs.shared.dimenPx
+import com.afollestad.materialdialogs.shared.isVisible
 
 /**
  * Manages a set of three [DialogActionButton]'s (measuring, layout, etc.).

@@ -17,8 +17,8 @@ import com.afollestad.materialdialogs.R
 import com.afollestad.materialdialogs.internal.list.MultiChoiceDialogAdapter
 import com.afollestad.materialdialogs.internal.list.PlainListDialogAdapter
 import com.afollestad.materialdialogs.internal.list.SingleChoiceDialogAdapter
+import com.afollestad.materialdialogs.shared.getDrawable
 import com.afollestad.materialdialogs.utilext.assertOneSet
-import com.afollestad.materialdialogs.utilext.getDrawable
 import com.afollestad.materialdialogs.utilext.getStringArray
 import com.afollestad.materialdialogs.utilext.inflate
 
@@ -171,7 +171,7 @@ private fun MaterialDialog.addContentRecyclerView() {
   this.contentRecyclerView = inflate(
       R.layout.md_dialog_stub_recyclerview, this.view
   )
-  this.contentRecyclerView!!.rootView = this.view
+  this.contentRecyclerView!!.attach(this)
   this.contentRecyclerView!!.layoutManager =
       LinearLayoutManager(windowContext)
   this.view.addView(this.contentRecyclerView, 1)

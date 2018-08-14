@@ -23,7 +23,9 @@ android {
 
 dependencies {
   implementation project(':core')
-  implementation project(':commons')
+  implementation project(':files')
+  implementation project(':color')
+
   implementation 'org.jetbrains.kotlin:kotlin-stdlib-jdk7:' + versions.kotlin
 
   implementation 'com.android.support:gridlayout-v7:' + versions.supportLib

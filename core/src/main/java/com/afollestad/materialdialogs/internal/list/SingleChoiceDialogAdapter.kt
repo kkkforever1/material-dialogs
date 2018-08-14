@@ -16,8 +16,8 @@ import com.afollestad.materialdialogs.MaterialDialog
 import com.afollestad.materialdialogs.R
 import com.afollestad.materialdialogs.list.SingleChoiceListener
 import com.afollestad.materialdialogs.list.getItemSelector
+import com.afollestad.materialdialogs.shared.inflate
 import com.afollestad.materialdialogs.utilext.hasActionButtons
-import com.afollestad.materialdialogs.utilext.inflate
 
 /** @author Aidan Follestad (afollestad) */
 internal class SingleChoiceViewHolder(

@@ -28,6 +28,7 @@ dependencies {
   implementation 'com.android.support:design:' + versions.supportLib
   implementation 'com.android.support:recyclerview-v7:' + versions.supportLib
   implementation 'org.jetbrains.kotlin:kotlin-stdlib-jdk7:' + versions.kotlin
+  implementation project(':shared')
 }
 
 apply from: '../spotless.gradle'
