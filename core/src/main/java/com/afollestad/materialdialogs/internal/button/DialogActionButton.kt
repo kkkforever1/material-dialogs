@@ -11,8 +11,8 @@ import android.support.v7.widget.AppCompatButton
 import android.util.AttributeSet
 import android.view.View
 import com.afollestad.materialdialogs.R
+import com.afollestad.materialdialogs.Theme.Companion.inferTheme
 import com.afollestad.materialdialogs.Theme.LIGHT
-import com.afollestad.materialdialogs.inferTheme
 import com.afollestad.materialdialogs.shared.dimenPx
 import com.afollestad.materialdialogs.shared.getColor
 import com.afollestad.materialdialogs.shared.getDrawable

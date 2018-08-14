@@ -18,6 +18,7 @@ import android.support.design.widget.TextInputLayout
 import android.view.View
 import android.widget.LinearLayout
 import android.widget.TextView
+import com.afollestad.materialdialogs.Theme.Companion.inferTheme
 import com.afollestad.materialdialogs.WhichButton.NEGATIVE
 import com.afollestad.materialdialogs.WhichButton.NEUTRAL
 import com.afollestad.materialdialogs.WhichButton.POSITIVE
