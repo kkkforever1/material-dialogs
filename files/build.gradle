@@ -1,6 +1,7 @@
 apply plugin: 'com.android.library'
 apply plugin: 'kotlin-android'
 apply from: '../dependencies.gradle'
+apply plugin: "com.github.ben-manes.versions"
 
 android {
   compileSdkVersion versions.compileSdk
