@@ -24,7 +24,7 @@ import java.io.File
  * @param initialDirectory The directory that is listed initially, defaults to external storage.
  * @param filter A filter to apply when listing folders, defaults to only show non-hidden folders.
  * @param waitForPositiveButton When true, the callback isn't invoked until the user selects a
- *    folder and taps on the positive action button.
+ *    folder and taps on the positive action button. Defaults to true if the dialog has buttons.
  * @param emptyTextRes A string resource displayed on the empty view shown when a directory is
  *    empty. Defaults to "This folder's empty!".
  * @param selection A callback invoked when a folder is selected.
@@ -34,7 +34,7 @@ import java.io.File
 fun MaterialDialog.folderChooser(
   initialDirectory: File = getExternalStorageDirectory(),
   filter: FileFilter = { !it.isHidden },
-  waitForPositiveButton: Boolean = true,
+  waitForPositiveButton: Boolean = hasActionButtons(),
   emptyTextRes: Int = R.string.files_default_empty_text,
   selection: FileCallback = null
 ): MaterialDialog {

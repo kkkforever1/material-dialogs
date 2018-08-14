@@ -18,7 +18,6 @@ import com.afollestad.materialdialogs.WhichButton.POSITIVE
 import com.afollestad.materialdialogs.list.SingleChoiceListener
 import com.afollestad.materialdialogs.list.getItemSelector
 import com.afollestad.materialdialogs.shared.inflate
-import com.afollestad.materialdialogs.utilext.hasActionButtons
 
 /** @author Aidan Follestad (afollestad) */
 internal class SingleChoiceViewHolder(

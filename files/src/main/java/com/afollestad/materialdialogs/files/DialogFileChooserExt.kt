@@ -27,7 +27,7 @@ typealias FileCallback = ((dialog: MaterialDialog, file: File) -> Unit)?
  * @param initialDirectory The directory that is listed initially, defaults to external storage.
  * @param filter A filter to apply when listing files, defaults to only show non-hidden files.
  * @param waitForPositiveButton When true, the callback isn't invoked until the user selects a
- *    file and taps on the positive action button.
+ *    file and taps on the positive action button. Defaults to true if the dialog has buttons.
  * @param emptyTextRes A string resource displayed on the empty view shown when a directory is
  *    empty. Defaults to "This folder's empty!".
  * @param selection A callback invoked when a file is selected.
@@ -37,7 +37,7 @@ typealias FileCallback = ((dialog: MaterialDialog, file: File) -> Unit)?
 fun MaterialDialog.fileChooser(
   initialDirectory: File = getExternalStorageDirectory(),
   filter: FileFilter = { !it.isHidden },
-  waitForPositiveButton: Boolean = true,
+  waitForPositiveButton: Boolean = hasActionButtons(),
   emptyTextRes: Int = R.string.files_default_empty_text,
   selection: FileCallback = null
 ): MaterialDialog {

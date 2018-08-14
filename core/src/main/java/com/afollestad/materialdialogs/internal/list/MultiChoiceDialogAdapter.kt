@@ -18,7 +18,6 @@ import com.afollestad.materialdialogs.WhichButton.POSITIVE
 import com.afollestad.materialdialogs.list.MultiChoiceListener
 import com.afollestad.materialdialogs.list.getItemSelector
 import com.afollestad.materialdialogs.shared.inflate
-import com.afollestad.materialdialogs.utilext.hasActionButtons
 import com.afollestad.materialdialogs.utilext.pullIndices
 
 /** @author Aidan Follestad (afollestad) */

@@ -25,7 +25,7 @@ typealias ColorCallback = ((dialog: MaterialDialog, color: Int) -> Unit)?
  * @param subColors Optional sub-level colors which exist under each top-level color.
  * @param initialSelection The optionally initially selected color literal integer.
  * @param waitForPositiveButton When true, the callback isn't invoked until the user selects
- *    a color and taps on the positive action button.
+ *    a color and taps on the positive action button. Defaults to true if the dialog has buttons.
  * @param callback An optional callback invoked when the user selects a color.
  */
 @SuppressLint("CheckResult")
@@ -34,7 +34,7 @@ fun MaterialDialog.colorChooser(
   colors: IntArray,
   subColors: Array<IntArray>? = null,
   @ColorInt initialSelection: Int? = null,
-  waitForPositiveButton: Boolean = true,
+  waitForPositiveButton: Boolean = hasActionButtons(),
   callback: ColorCallback = null
 ): MaterialDialog {
   customView(R.layout.md_color_chooser_grid)

@@ -45,7 +45,8 @@ fun MaterialDialog.getInputField(): EditText? {
  * @param maxLength The max length for the input field, shows a counter and disables the positive
  *    action button if the input length surpasses it.
  * @param waitForPositiveButton When true, the [callback] isn't invoked until the positive button
- *    is clicked. Otherwise, it's invoked every time the input text changes.
+ *    is clicked. Otherwise, it's invoked every time the input text changes. Defaults to true if
+ *    the dialog has buttons.
  * @param callback A listener to invoke for input text notifications.
  */
 @CheckResult
@@ -56,7 +57,7 @@ fun MaterialDialog.input(
   @StringRes prefillRes: Int? = null,
   inputType: Int = InputType.TYPE_CLASS_TEXT,
   maxLength: Int? = null,
-  waitForPositiveButton: Boolean = true,
+  waitForPositiveButton: Boolean = hasActionButtons(),
   callback: InputCallback = null
 ): MaterialDialog {
   addInputField()

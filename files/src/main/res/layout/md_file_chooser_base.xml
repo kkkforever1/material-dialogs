@@ -1,10 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout
+<FrameLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:orientation="vertical"
     >
 
   <com.afollestad.materialdialogs.internal.list.DialogRecyclerView
@@ -12,6 +11,7 @@
       android:layout_width="match_parent"
       android:layout_height="wrap_content"
       android:clipToPadding="false"
+      android:paddingBottom="@dimen/file_chooser_list_padding_bottom"
       />
 
   <TextView
@@ -29,4 +29,4 @@
       tools:text="No files!"
       />
 
-</LinearLayout>
+</FrameLayout>

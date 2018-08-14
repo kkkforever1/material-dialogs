@@ -143,11 +143,6 @@ internal fun MaterialDialog.getStringArray(@ArrayRes res: Int?): Array<String> {
   return windowContext.resources.getStringArray(res)
 }
 
-internal fun MaterialDialog.hasActionButtons(): Boolean {
-  return view.buttonsLayout.visibleButtons
-      .isNotEmpty()
-}
-
 internal fun MaterialDialog.setIcon(
   imageView: ImageView,
   @DrawableRes iconRes: Int?,

@@ -19,10 +19,19 @@ internal fun File.hasParent() = betterParent() != null
 internal fun File.isExternalStorage() =
   absolutePath == getExternalStorageDirectory().absolutePath
 
+internal fun File.isRoot() = absolutePath == "/"
+
 internal fun File.betterParent(): File? {
   if (this.isExternalStorage()) {
     // Emulated external storage's parent is empty so jump over it
     return getExternalStorageDirectory().parentFile.parentFile
+  }
+  if (parentFile.isRoot()) {
+    val rootContent = parentFile.list() ?: emptyArray()
+    if (rootContent.isEmpty()) {
+      // If device isn't rooted, don't allow root dir access so we don't get stuck
+      return null
+    }
   }
   // Else normal operation
   return parentFile
@@ -36,8 +45,11 @@ internal fun File.jumpOverEmulated(): File {
   return this
 }
 
-internal fun File.friendlyName() =
-  if (isExternalStorage()) "External Storage" else name
+internal fun File.friendlyName() = when {
+  isExternalStorage() -> "External Storage"
+  isRoot() -> "Root"
+  else -> name
+}
 
 internal fun Context.hasPermission(permission: String): Boolean {
   return ContextCompat.checkSelfPermission(this, permission) ==

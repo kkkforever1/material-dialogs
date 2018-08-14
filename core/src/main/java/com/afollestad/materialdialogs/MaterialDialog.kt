@@ -257,6 +257,9 @@ class MaterialDialog(
     return this
   }
 
+  /** Returns true if the dialog has visible action buttons. */
+  fun hasActionButtons() = view.buttonsLayout.visibleButtons.isNotEmpty()
+
   /**
    * Sets a listener that's invoked when the dialog is [show]'n. If this is called
    * multiple times, it appends additional callbacks, rather than overwriting.
